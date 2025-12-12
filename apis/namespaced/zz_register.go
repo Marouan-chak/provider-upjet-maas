@@ -10,15 +10,23 @@ package namespaced
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/crossplane/upjet-provider-template/apis/namespaced/null/v1alpha1"
-	v1alpha1namespaced "github.com/crossplane/upjet-provider-template/apis/namespaced/v1alpha1"
-	v1beta1 "github.com/crossplane/upjet-provider-template/apis/namespaced/v1beta1"
+	v1alpha1 "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/dns/v1alpha1"
+	v1alpha1infrastructure "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/infrastructure/v1alpha1"
+	v1alpha1machine "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/machine/v1alpha1"
+	v1alpha1network "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/network/v1alpha1"
+	v1alpha1storage "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/storage/v1alpha1"
+	v1alpha1namespaced "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/v1alpha1"
+	v1beta1 "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/v1beta1"
 )
 
 func init() {
 	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
 	AddToSchemes = append(AddToSchemes,
 		v1alpha1.SchemeBuilder.AddToScheme,
+		v1alpha1infrastructure.SchemeBuilder.AddToScheme,
+		v1alpha1machine.SchemeBuilder.AddToScheme,
+		v1alpha1network.SchemeBuilder.AddToScheme,
+		v1alpha1storage.SchemeBuilder.AddToScheme,
 		v1alpha1namespaced.SchemeBuilder.AddToScheme,
 		v1beta1.SchemeBuilder.AddToScheme,
 	)

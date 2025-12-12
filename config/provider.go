@@ -6,13 +6,24 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
 
-	nullCluster "github.com/crossplane/upjet-provider-template/config/cluster/null"
-	nullNamespaced "github.com/crossplane/upjet-provider-template/config/namespaced/null"
+	// Cluster-scoped resource configs
+	dnsCluster "github.com/Marouan-chak/provider-upjet-maas/config/cluster/dns"
+	infrastructureCluster "github.com/Marouan-chak/provider-upjet-maas/config/cluster/infrastructure"
+	machineCluster "github.com/Marouan-chak/provider-upjet-maas/config/cluster/machine"
+	networkCluster "github.com/Marouan-chak/provider-upjet-maas/config/cluster/network"
+	storageCluster "github.com/Marouan-chak/provider-upjet-maas/config/cluster/storage"
+
+	// Namespaced resource configs
+	dnsNamespaced "github.com/Marouan-chak/provider-upjet-maas/config/namespaced/dns"
+	infrastructureNamespaced "github.com/Marouan-chak/provider-upjet-maas/config/namespaced/infrastructure"
+	machineNamespaced "github.com/Marouan-chak/provider-upjet-maas/config/namespaced/machine"
+	networkNamespaced "github.com/Marouan-chak/provider-upjet-maas/config/namespaced/network"
+	storageNamespaced "github.com/Marouan-chak/provider-upjet-maas/config/namespaced/storage"
 )
 
 const (
-	resourcePrefix = "template"
-	modulePath     = "github.com/crossplane/upjet-provider-template"
+	resourcePrefix = "maas"
+	modulePath     = "github.com/Marouan-chak/provider-upjet-maas"
 )
 
 //go:embed schema.json
@@ -24,7 +35,7 @@ var providerMetadata string
 // GetProvider returns provider configuration
 func GetProvider() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("template.crossplane.io"),
+		ujconfig.WithRootGroup("maas.crossplane.io"),
 		ujconfig.WithIncludeList(ExternalNameConfigured()),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithDefaultResourceOptions(
@@ -33,7 +44,11 @@ func GetProvider() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		nullCluster.Configure,
+		networkCluster.Configure,
+		dnsCluster.Configure,
+		machineCluster.Configure,
+		infrastructureCluster.Configure,
+		storageCluster.Configure,
 	} {
 		configure(pc)
 	}
@@ -45,7 +60,7 @@ func GetProvider() *ujconfig.Provider {
 // GetProviderNamespaced returns the namespaced provider configuration
 func GetProviderNamespaced() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("template.m.crossplane.io"),
+		ujconfig.WithRootGroup("maas.m.crossplane.io"),
 		ujconfig.WithIncludeList(ExternalNameConfigured()),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithDefaultResourceOptions(
@@ -57,7 +72,11 @@ func GetProviderNamespaced() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		nullNamespaced.Configure,
+		networkNamespaced.Configure,
+		dnsNamespaced.Configure,
+		machineNamespaced.Configure,
+		infrastructureNamespaced.Configure,
+		storageNamespaced.Configure,
 	} {
 		configure(pc)
 	}

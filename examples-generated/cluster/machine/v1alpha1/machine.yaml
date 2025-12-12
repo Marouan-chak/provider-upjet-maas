@@ -1,0 +1,16 @@
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: Machine
+metadata:
+  annotations:
+    meta.upbound.io/example-id: machine/v1alpha1/machine
+  labels:
+    testing.upbound.io/example-name: virsh_vm1
+  name: virsh-vm1
+spec:
+  forProvider:
+    powerParametersSecretRef:
+      key: example-key
+      name: example-secret
+      namespace: upbound-system
+    powerType: virsh
+    pxeMacAddress: 52:54:00:89:f5:3e

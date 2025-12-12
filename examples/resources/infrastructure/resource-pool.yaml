@@ -1,0 +1,11 @@
+---
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: ResourcePool
+metadata:
+  name: example-pool
+spec:
+  forProvider:
+    name: my-pool
+    description: "Example resource pool for testing"
+  providerConfigRef:
+    name: default

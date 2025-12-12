@@ -1,0 +1,21 @@
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceBond
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/interfacebond
+  labels:
+    testing.upbound.io/example-name: test
+  name: test
+spec:
+  forProvider:
+    acceptRa: false
+    bondLacpRate: slow
+    bondMode: 802.3ad
+    machineSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    mtu: 9000
+    name: bond0
+    parents:
+    - eth1
+    - eth2

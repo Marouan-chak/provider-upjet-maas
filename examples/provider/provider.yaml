@@ -1,0 +1,24 @@
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-upjet-maas
+spec:
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        spec:
+          containers:
+            - name: package-runtime
+              image: docker.io/marouandock/provider-maas:latest
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-upjet-maas
+spec:
+  runtimeConfigRef:
+    name: provider-upjet-maas
+  package: docker.io/marouandock/provider-maas:latest
+  packagePullPolicy: IfNotPresent

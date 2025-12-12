@@ -1,40 +1,819 @@
-name: hashicorp/null
+name: canonical/maas
 resources:
-    null_resource:
+    maas_block_device:
         subCategory: ""
-        description: The null_resource resource implements the standard resource lifecycle but takes no further action. On Terraform 1.4 and later, use the terraform_data resource type https://developer.hashicorp.com/terraform/language/resources/terraform-data instead. Terraform 1.9 and later support the moved configuration block from null_resource to terraform_data. The triggers argument allows specifying an arbitrary set of values that, when changed, will cause the resource to be replaced.
-        name: null_resource
-        title: null_resource Resource - terraform-provider-null
+        description: Provides a resource to manage MAAS machines' block devices.
+        name: maas_block_device
+        title: maas_block_device Resource - terraform-provider-maas
         examples:
-            - name: cluster
+            - name: vdb
               manifest: |-
                 {
-                  "connection": [
+                  "id_path": "/dev/vdb",
+                  "machine": "${maas_machine.virsh_vm2.id}",
+                  "name": "vdb",
+                  "partitions": [
                     {
-                      "host": "${element(aws_instance.cluster[*].public_ip, 0)}"
+                      "fs_type": "ext4",
+                      "label": "media",
+                      "mount_point": "/media",
+                      "size_gigabytes": 10
+                    },
+                    {
+                      "fs_type": "ext4",
+                      "mount_point": "/storage",
+                      "size_gigabytes": 15
                     }
                   ],
-                  "provisioner": {
-                    "remote-exec": [
-                      {
-                        "inline": [
-                          "bootstrap-cluster.sh ${join(\" \",\n      aws_instance.cluster[*].private_ip)}"
-                        ]
-                      }
-                    ]
-                  },
-                  "triggers": {
-                    "cluster_instance_ids": "${join(\",\", aws_instance.cluster[*].id)}"
-                  }
+                  "size_gigabytes": 27,
+                  "tags": [
+                    "ssd"
+                  ]
                 }
-              dependencies:
-                aws_instance.cluster: |-
+              references:
+                machine: maas_machine.virsh_vm2.id
+        argumentDocs:
+            block_size: (Number) The block size of the block device. Defaults to 512.
+            bootable: (Boolean) Boolean value indicating if the partition is set as bootable.
+            fs_type: (String) The file system type (e.g. ext4). If this is not set, the partition is unformatted.
+            id: (String) The ID of this resource.
+            id_path: (String) Only used if model and serial cannot be provided. This should be a path that is fixed and doesn't change depending on the boot order or kernel version. This argument is computed if it's not given.
+            is_boot_device: (Boolean) Boolean value indicating if the block device is set as the boot device.
+            label: (String) The label assigned if the partition is formatted.
+            machine: (String) The machine identifier (system ID, hostname, or FQDN) that owns the block device.
+            model: (String) Model of the block device. Used in conjunction with serial argument. Conflicts with id_path. This argument is computed if it's not given.
+            mount_options: (String) The options used for the partition mount.
+            mount_point: (String) The mount point used. If this is not set, the partition is not mounted. This is used only the partition is formatted.
+            name: (String) The block device name.
+            partitions: (Block List) List of partition resources created for the new block device. Parameters defined below. This argument is processed in attribute-as-blocks mode. And, it is computed if it's not given. (see below for nested schema)
+            path: (String) Block device path.
+            serial: (String) Serial number of the block device. Used in conjunction with model argument. Conflicts with id_path. This argument is computed if it's not given.
+            size_gigabytes: (Number) The size of the block device (given in GB).
+            tags: (Set of String) A set of tag names assigned to the new block device. This argument is computed if it's not given.
+            uuid: (String) Block device UUID.
+        importStatements:
+            - |-
+              # Block devices can be imported with the machine identifier (system ID, hostname, or FQDN) and the block device identifier (ID or name). e.g.
+              $ terraform import maas_block_device.vdb machine-06:vdb
+    maas_device:
+        subCategory: ""
+        description: Provides a resource to manage MAAS devices.
+        name: maas_device
+        title: maas_device Resource - terraform-provider-maas
+        examples:
+            - name: test_device
+              manifest: |-
+                {
+                  "description": "Test description",
+                  "domain": "${maas_dns_domain.test_domain.name}",
+                  "hostname": "test-device",
+                  "network_interfaces": [
                     {
-                      "ami": "ami-0dcc1e21636832c5d",
-                      "count": 3,
-                      "instance_type": "m5.large"
+                      "mac_address": "12:23:45:67:89:de"
+                    }
+                  ],
+                  "zone": "default"
+                }
+              references:
+                domain: maas_dns_domain.test_domain.name
+              dependencies:
+                maas_dns_domain.test_domain: |-
+                    {
+                      "authoritative": true,
+                      "name": "domain",
+                      "ttl": 3600
                     }
         argumentDocs:
-            id: (String) This is set to a random value at create time.
-            triggers: (Map of String) A map of arbitrary strings that, when changed, will force the null resource to be replaced, re-running any associated provisioners.
+            description: (String) The description of the device.
+            domain: (String) The domain of the device.
+            fqdn: (String) The device FQDN.
+            hostname: (String) The device hostname.
+            id: (String) The ID of this resource.
+            ip_addresses: (Set of String) A set of IP addressed assigned to the device.
+            mac_address: (String) MAC address of the network interface.
+            name: (String) The name of the network interface.
+            network_interfaces: '(Block Set, Min: 1) A set of network interfaces attached to the device. (see below for nested schema)'
+            owner: (String) The owner of the device.
+            zone: (String) The zone of the device.
+        importStatements:
+            - |-
+              # Devices can be imported using their ID or hostname. e.g.
+              $ terraform import maas_device.test_device test-device
+    maas_dns_domain:
+        subCategory: ""
+        description: Provides a resource to manage MAAS DNS domains.
+        name: maas_dns_domain
+        title: maas_dns_domain Resource - terraform-provider-maas
+        examples:
+            - name: cloudbase
+              manifest: |-
+                {
+                  "authoritative": true,
+                  "name": "cloudbase",
+                  "ttl": 3600
+                }
+        argumentDocs:
+            authoritative: (Boolean) Boolean value indicating if the new DNS domain is authoritative. Defaults to false.
+            id: (String) The ID of this resource.
+            is_default: (Boolean) Boolean value indicating if the new DNS domain will be set as the default in the MAAS environment. Defaults to false.
+            name: (String) The name of the new DNS domain.
+            ttl: (Number) The default TTL for the new DNS domain.
+        importStatements:
+            - |-
+              # DNS domains can be imported using their ID or name. e.g.
+              $ terraform import maas_dns_domain.cloudbase cloudbase
+    maas_dns_record:
+        subCategory: ""
+        description: Provides a resource to manage MAAS DNS domain records.
+        name: maas_dns_record
+        title: maas_dns_record Resource - terraform-provider-maas
+        examples:
+            - name: test_a
+              manifest: |-
+                {
+                  "data": "10.99.11.33",
+                  "fqdn": "test-a.${maas_dns_domain.cloudbase.name}",
+                  "type": "A/AAAA"
+                }
+            - name: test_aaaa
+              manifest: |-
+                {
+                  "data": "2001:db8:3333:4444:5555:6666:7777:8888",
+                  "fqdn": "test-aaaa.${maas_dns_domain.cloudbase.name}",
+                  "type": "A/AAAA"
+                }
+            - name: test_txt
+              manifest: |-
+                {
+                  "data": "@",
+                  "domain": "${maas_dns_domain.cloudbase.name}",
+                  "name": "test-txt",
+                  "type": "TXT"
+                }
+              references:
+                domain: maas_dns_domain.cloudbase.name
+        argumentDocs:
+            data: (String) The data set for the new DNS record.
+            domain: (String) The domain of the new DNS record. Used in conjunction with name. It conflicts with fqdn argument.
+            fqdn: (String) The fully qualified domain name of the new DNS record. This contains the name and the domain of the new DNS record. It conflicts with name and domain arguments.
+            id: (String) The ID of this resource.
+            name: (String) The new DNS record resource name. Used in conjunction with domain. It conflicts with fqdn argument.
+            ttl: (Number) The TTL of the new DNS record.
+            type: '(String) The DNS record type. Valid options are: A/AAAA, CNAME, MX, NS, SRV, SSHFP, TXT.'
+        importStatements:
+            - |-
+              # DNS records can be imported using the type and the identifier (ID or FQDN). e.g.
+              $ terraform import maas_dns_record.test_a A/AAAA:test-a.cloudbase
+    maas_fabric:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network fabrics.
+        name: maas_fabric
+        title: maas_fabric Resource - terraform-provider-maas
+        examples:
+            - name: tf_fabric
+              manifest: |-
+                {
+                  "name": "tf-fabric"
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            name: (String) The fabric name.
+        importStatements:
+            - |-
+              # An existing network fabric can be imported using its name or ID. e.g.
+              $ terraform import maas_fabric.tf_fabric tf-fabric
+    maas_instance:
+        subCategory: ""
+        description: 'Provides a resource to deploy and release machines already configured in MAAS, based on the specified parameters. If no parameters are given, a random machine will be allocated and deployed using the defaults. NOTE: The MAAS provider currently provides both standalone resources and in-line resources for network interfaces. You cannot use in-line network interfaces in conjunction with any standalone network interfaces resources. Doing so will cause conflicts and will overwrite network configs.'
+        name: maas_instance
+        title: maas_instance Resource - terraform-provider-maas
+        examples:
+            - name: kvm
+              manifest: |-
+                {
+                  "allocate_params": [
+                    {
+                      "hostname": "${maas_vm_host_machine.kvm[count.index].hostname}",
+                      "min_cpu_count": 1,
+                      "min_memory": 2048,
+                      "tags": [
+                        "${maas_tag.virtual.name}",
+                        "${maas_tag.kvm.name}",
+                        "${maas_tag.ubuntu.name}"
+                      ]
+                    }
+                  ],
+                  "count": 2,
+                  "deploy_params": [
+                    {
+                      "distro_series": "focal"
+                    }
+                  ]
+                }
+              references:
+                allocate_params.tags: maas_tag.virtual.name
+        argumentDocs:
+            allocate_params: '(Block List, Max: 1) Nested argument with the constraints used to machine allocation. Defined below. (see below for nested schema)'
+            cpu_count: (Number) The number of CPU cores of the deployed MAAS machine.
+            create: (String)
+            delete: (String)
+            deploy_params: '(Block List, Max: 1) Nested argument with the config used to deploy the allocated machine. Defined below. (see below for nested schema)'
+            distro_series: (String) The distro series used to deploy the allocated MAAS machine. If it's not given, the MAAS server default value is used.
+            enable_hw_sync: (Boolean) Periodically sync hardware
+            fqdn: (String) The deployed MAAS machine FQDN.
+            hostname: (String) The deployed MAAS machine hostname.
+            hwe_kernel: (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+            id: (String) The ID of this resource.
+            ip_address: (String) Static IP address to be configured on the network interface. If this is set, the subnet_cidr is required.
+            ip_addresses: (Set of String) A set of IP addressed assigned to the deployed MAAS machine.
+            memory: (Number) The RAM memory size (in GiB) of the deployed MAAS machine.
+            min_cpu_count: (Number) The minimum number of cores used to allocate the MAAS machine.
+            min_memory: (Number) The minimum RAM memory size (in MB) used to allocate the MAAS machine.
+            name: (String) The name of the network interface to be configured on the allocated machine.
+            network_interfaces: (Block Set) Specifies a network interface configuration done before the machine is deployed. Parameters defined below. This argument is processed in attribute-as-blocks mode. (see below for nested schema)
+            pool: (String) The deployed MAAS machine pool name.
+            subnet_cidr: (String) An existing subnet CIDR used to configure the network interface. Unless ip_address is defined, a free IP address is allocated from the subnet.
+            system_id: (String) The system_id of the MAAS machine to be allocated.
+            tags: (Set of String) A set of tag names associated to the deployed MAAS machine.
+            timeouts: (Block, Optional) (see below for nested schema)
+            user_data: (String) Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
+            zone: (String) The deployed MAAS machine zone name.
+        importStatements:
+            - |-
+              # The machines imported as `maas_instance` resources must be already deployed. They can be imported using one of the deployed machine attributes: system ID, hostname, or FQDN. e.g.
+              $ terraform import maas_instance.virsh_vm machine-01
+    maas_machine:
+        subCategory: ""
+        description: Provides a resource to manage MAAS machines.
+        name: maas_machine
+        title: maas_machine Resource - terraform-provider-maas
+        examples:
+            - name: virsh_vm1
+              manifest: |-
+                {
+                  "power_parameters": "${jsonencode({\n    power_address = \"qemu+ssh://ubuntu@10.113.1.26/system\"\n    power_id      = \"test-vm1\"\n  })}",
+                  "power_type": "virsh",
+                  "pxe_mac_address": "52:54:00:89:f5:3e"
+                }
+        argumentDocs:
+            architecture: (String) The architecture type of the machine. Defaults to amd64/generic.
+            create: (String)
+            domain: (String) The domain of the machine. This is computed if it's not set.
+            hostname: (String) The machine hostname. This is computed if it's not set.
+            id: (String) The ID of this resource.
+            min_hwe_kernel: (String) The minimum kernel version allowed to run on this machine. Only used when deploying Ubuntu. This is computed if it's not set.
+            network_interfaces: (Set of String) A set of MAC addresses of network interfaces attached to the machine.
+            pool: (String) The resource pool of the machine. This is computed if it's not set.
+            power_parameters: (String, Sensitive) Serialized JSON string containing the parameters specific to the power_type. See Power types section for a list of the available power parameters for each power type.
+            power_type: (String) A power management type (e.g. ipmi).
+            pxe_mac_address: (String) The MAC address of the machine's PXE boot NIC.
+            timeouts: (Block, Optional) (see below for nested schema)
+            zone: (String) The zone of the machine. This is computed if it's not set.
+        importStatements:
+            - |-
+              # MAAS machines can be imported using one of the attributes: system ID, hostname, or FQDN. e.g.
+              $ terraform import maas_machine.virsh_vm1 vm1.maas
+    maas_network_interface_bond:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network Bonds.
+        name: maas_network_interface_bond
+        title: maas_network_interface_bond Resource - terraform-provider-maas
+        examples:
+            - name: test
+              manifest: |-
+                {
+                  "accept_ra": false,
+                  "bond_lacp_rate": "slow",
+                  "bond_mode": "802.3ad",
+                  "machine": "${maas_machine.example.id}",
+                  "mtu": 9000,
+                  "name": "bond0",
+                  "parents": [
+                    "eth1",
+                    "eth2"
+                  ]
+                }
+              references:
+                machine: maas_machine.example.id
+        argumentDocs:
+            accept_ra: (Boolean) Accept router advertisements. (IPv6 only).
+            bond_downdelay: (Number) Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+            bond_lacp_rate: '(String) Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are fast or slow. (Default: slow).'
+            bond_miimon: '(Number) The link monitoring frequency in milliseconds. (Default: 100).'
+            bond_mode: '(String) The operating mode of the bond. (Default: active-backup). Supported bonding modes: - balance-rr: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - active-backup: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond''s MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - balance-xor: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR''d with destination MAC address XOR packet type ID) modulo slave count]. - broadcast: Transmits everything on all slave interfaces. This mode provides fault tolerance. - 802.3ad: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - balance-tlb: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - balance-alb: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.'
+            bond_num_grat_arp: '(Number) The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).'
+            bond_updelay: (Number) Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+            bond_xmit_hash_policy: '(String) The transmit hash policy to use for slave selection in balance-xor, 802.3ad, and tlb modes. Possible values are: layer2, layer2+3, layer3+4, encap2+3, encap3+4. (Default: layer2).'
+            id: (String) The ID of this resource.
+            mac_address: (String) The bond interface MAC address.
+            machine: (String) The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+            mtu: (Number) The MTU of the bond interface.
+            name: (String) The bond interface name.
+            parents: (Set of String) Parent interface names for this bond interface.
+            tags: (Set of String) A set of tag names to be assigned to the bond interface.
+            vlan: (Number) Database ID of the VLAN the bond interface is connected to.
+        importStatements:
+            - |-
+              # A bond network interface can be imported using the machine identifier (system ID, hostname, or FQDN) and ID. e.g.
+              $ terraform import maas_network_interface_bond.example vm1:id
+    maas_network_interface_bridge:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network Bridges.
+        name: maas_network_interface_bridge
+        title: maas_network_interface_bridge Resource - terraform-provider-maas
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "machine": "${maas_machine.example.id}",
+                  "name": "example",
+                  "parent": "${maas_network_interface_vlan.example.id}"
+                }
+              references:
+                machine: maas_machine.example.id
+                parent: maas_network_interface_vlan.example.id
+        argumentDocs:
+            accept_ra: (Boolean) Accept router advertisements. (IPv6 only).
+            bridge_fd: '(Number) Set bridge forward delay to time seconds. (Default: 15).'
+            bridge_stp: '(Boolean) Turn spanning tree protocol on or off. (Default: False).'
+            bridge_type: '(String) The type of bridge to create. Possible values are: standard, ovs.'
+            id: (String) The ID of this resource.
+            mac_address: (String) The bridge interface MAC address.
+            machine: (String) The identifier (system ID, hostname, or FQDN) of the machine with the bridge interface.
+            mtu: (Number) The MTU of the bridge interface.
+            name: (String) The bridge interface name.
+            parent: (String) Parent interface name for this bridge interface.
+            tags: (Set of String) A set of tag names to be assigned to the bridge interface.
+            vlan: (Number) Database ID of the VLAN the bridge interface is connected to.
+        importStatements:
+            - |-
+              # A bridge network interface can be imported using the machine identifier (system ID, hostname, or FQDN) and ID. e.g.
+              $ terraform import maas_network_interface_bridge.example vm1:id
+    maas_network_interface_link:
+        subCategory: ""
+        description: Provides a resource to manage network configuration on a network interface.
+        name: maas_network_interface_link
+        title: maas_network_interface_link Resource - terraform-provider-maas
+        examples:
+            - name: virsh_vm1_nic1
+              manifest: |-
+                {
+                  "default_gateway": true,
+                  "ip_address": "10.99.4.111",
+                  "machine": "${maas_machine.virsh_vm1.id}",
+                  "mode": "STATIC",
+                  "network_interface": "${maas_network_interface_physical.virsh_vm1_nic1.id}",
+                  "subnet": "${data.maas_subnet.pxe.id}"
+                }
+              references:
+                machine: maas_machine.virsh_vm1.id
+                network_interface: maas_network_interface_physical.virsh_vm1_nic1.id
+                subnet: data.maas_subnet.pxe.id
+            - name: virsh_vm1_nic2
+              manifest: |-
+                {
+                  "machine": "${maas_machine.virsh_vm1.id}",
+                  "mode": "AUTO",
+                  "network_interface": "${maas_network_interface_physical.virsh_vm1_nic2.id}",
+                  "subnet": "${data.maas_subnet.vid10.id}"
+                }
+              references:
+                machine: maas_machine.virsh_vm1.id
+                network_interface: maas_network_interface_physical.virsh_vm1_nic2.id
+                subnet: data.maas_subnet.vid10.id
+            - name: virsh_vm1_nic3
+              manifest: |-
+                {
+                  "machine": "${maas_machine.virsh_vm1.id}",
+                  "mode": "DHCP",
+                  "network_interface": "${maas_network_interface_physical.virsh_vm1_nic3.id}",
+                  "subnet": "${data.maas_subnet.pxe.id}"
+                }
+              references:
+                machine: maas_machine.virsh_vm1.id
+                network_interface: maas_network_interface_physical.virsh_vm1_nic3.id
+                subnet: data.maas_subnet.pxe.id
+        argumentDocs:
+            AUTO: '- Random static IP address from the subnet.'
+            DHCP: '- IP address from the DHCP on the given subnet.'
+            LINK_UP: '- Bring the interface up only on the given subnet. No IP address will be assigned.'
+            STATIC: '- Use ip_address as static IP address.'
+            default_gateway: (Boolean) Boolean value. When enabled, it sets the subnet gateway IP address as the default gateway for the machine the interface belongs to. This option can only be used with the AUTO and STATIC modes. Defaults to false.
+            id: (String) The ID of this resource.
+            ip_address: (String) Valid IP address (from the given subnet) to be configured on the network interface. Only used when mode is set to STATIC.
+            machine: (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface.
+            mode: '(String) Connection mode to subnet. It defaults to AUTO. Valid options are:'
+            network_interface: (String) The identifier (MAC address, name, or ID) of the network interface.
+            subnet: (String) The identifier (CIDR or ID) of the subnet to be connected.
         importStatements: []
+    maas_network_interface_physical:
+        subCategory: ""
+        description: Provides a resource to manage a physical network interface from an existing MAAS machine.
+        name: maas_network_interface_physical
+        title: maas_network_interface_physical Resource - terraform-provider-maas
+        examples:
+            - name: virsh_vm1_nic1
+              manifest: |-
+                {
+                  "mac_address": "52:54:00:89:f5:3e",
+                  "machine": "${maas_machine.virsh_vm1.id}",
+                  "name": "eth0",
+                  "tags": [
+                    "nic1-tag1",
+                    "nic1-tag2",
+                    "nic1-tag3"
+                  ],
+                  "vlan": "${data.maas_vlan.default.id}"
+                }
+              references:
+                machine: maas_machine.virsh_vm1.id
+                vlan: data.maas_vlan.default.id
+            - name: virsh_vm1_nic2
+              manifest: |-
+                {
+                  "mac_address": "52:54:00:f5:89:ae",
+                  "machine": "${maas_machine.virsh_vm1.id}",
+                  "name": "eth1",
+                  "tags": [
+                    "nic2-tag1",
+                    "nic2-tag2",
+                    "nic2-tag3"
+                  ],
+                  "vlan": "${data.maas_vlan.vid10.id}"
+                }
+              references:
+                machine: maas_machine.virsh_vm1.id
+                vlan: data.maas_vlan.vid10.id
+            - name: virsh_vm1_nic3
+              manifest: |-
+                {
+                  "mac_address": "52:54:00:0e:92:79",
+                  "machine": "${maas_machine.virsh_vm1.id}",
+                  "name": "eth2",
+                  "tags": [
+                    "nic3-tag1",
+                    "nic3-tag2",
+                    "nic3-tag3"
+                  ],
+                  "vlan": "${data.maas_vlan.default.id}"
+                }
+              references:
+                machine: maas_machine.virsh_vm1.id
+                vlan: data.maas_vlan.default.id
+        argumentDocs:
+            id: (String) The ID of this resource.
+            mac_address: (String) The physical network interface MAC address.
+            machine: (String) The identifier (system ID, hostname, or FQDN) of the machine with the physical network interface.
+            mtu: (Number) The MTU of the physical network interface. This argument is computed if it's not set.
+            name: (String) The physical network interface name. This argument is computed if it's not set.
+            tags: (Set of String) A set of tag names to be assigned to the physical network interface. This argument is computed if it's not set.
+            vlan: (Number) Database ID of the VLAN the physical network interface is connected to.
+        importStatements:
+            - |-
+              # A physical network interface can be imported using the machine identifier (system ID, hostname, or FQDN) and its own identifier (MAC address, name, or ID). e.g.
+              $ terraform import maas_network_interface_physical.virsh_vm1 vm1/eth0
+    maas_network_interface_vlan:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network Vlans.
+        name: maas_network_interface_vlan
+        title: maas_network_interface_vlan Resource - terraform-provider-maas
+        examples:
+            - name: example
+              manifest: |-
+                {
+                  "fabric": "fabric",
+                  "machine": "${maas_machine.example.id}",
+                  "parent": "${maas_network_interface_bond.example.name}",
+                  "vlan": "${data.maas_vlan.example.id}"
+                }
+              references:
+                machine: maas_machine.example.id
+                parent: maas_network_interface_bond.example.name
+                vlan: data.maas_vlan.example.id
+        argumentDocs:
+            accept_ra: (Boolean) Accept router advertisements. (IPv6 only).
+            fabric: (String) The identifier (name or ID) of the fabric for the new VLAN interface.
+            id: (String) The ID of this resource.
+            machine: (String) The identifier (system ID, hostname, or FQDN) of the machine with the VLAN interface.
+            mtu: (Number) The MTU of the VLAN interface.
+            parent: (String) Parent interface name for this VLAN interface.
+            tags: (Set of String) A set of tag names to be assigned to the VLAN interface.
+            vlan: (Number) Database ID of the VLAN the VLAN interface is connected to.
+        importStatements:
+            - |-
+              # A VLAN network interface can be imported using the machine identifier (system ID, hostname, or FQDN) and ID. e.g.
+              $ terraform import maas_network_interface_vlan.example vm1:id
+    maas_resource_pool:
+        subCategory: ""
+        description: Provides a resource to manage MAAS resource pools.
+        name: maas_resource_pool
+        title: maas_resource_pool Resource - terraform-provider-maas
+        examples:
+            - name: test_resource_pool
+              manifest: |-
+                {
+                  "description": "Test description",
+                  "name": "test-resource-pool"
+                }
+        argumentDocs:
+            description: (String) The description of the resource pool.
+            id: (String) The ID of this resource.
+            name: (String) The name of the resource pool.
+        importStatements:
+            - |-
+              # Resource pools can be imported using their ID or name. e.g.
+              $ terraform import maas_resource_pool.test_resource_pool test-resource-pool
+    maas_space:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network spaces.
+        name: maas_space
+        title: maas_space Resource - terraform-provider-maas
+        examples:
+            - name: tf_space
+              manifest: |-
+                {
+                  "name": "tf-space"
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            name: (String) The name of the new space.
+        importStatements:
+            - |-
+              # Spaces can be imported using the name or ID. e.g.
+              $ terraform import maas_space.tf_space tf-space
+    maas_subnet:
+        subCategory: ""
+        description: 'Provides a resource to manage MAAS network subnets. NOTE: The MAAS provider currently supports both standalone resources and in-line resources for subnet IP ranges. You cannot use in-line ip_ranges in conjunction with standalone maas_subnet_ip_range resources. Doing so will cause conflicts and will overwrite subnet IP ranges.'
+        name: maas_subnet
+        title: maas_subnet Resource - terraform-provider-maas
+        examples:
+            - name: tf_subnet
+              manifest: |-
+                {
+                  "cidr": "10.88.88.0/24",
+                  "dns_servers": [
+                    "1.1.1.1"
+                  ],
+                  "fabric": "${maas_fabric.tf_fabric.id}",
+                  "gateway_ip": "10.88.88.1",
+                  "ip_ranges": [
+                    {
+                      "end_ip": "10.88.88.50",
+                      "start_ip": "10.88.88.1",
+                      "type": "reserved"
+                    },
+                    {
+                      "end_ip": "10.88.88.254",
+                      "start_ip": "10.88.88.200",
+                      "type": "dynamic"
+                    }
+                  ],
+                  "name": "tf_subnet",
+                  "vlan": "${maas_vlan.tf_vlan.vid}"
+                }
+              references:
+                fabric: maas_fabric.tf_fabric.id
+                vlan: maas_vlan.tf_vlan.vid
+            - name: tf_subnet_2
+              manifest: |-
+                {
+                  "cidr": "10.77.77.0/24",
+                  "dns_servers": [
+                    "1.1.1.1"
+                  ],
+                  "fabric": "${maas_fabric.tf_fabric.id}",
+                  "gateway_ip": "10.77.77.1",
+                  "name": "tf_subnet_2"
+                }
+              references:
+                fabric: maas_fabric.tf_fabric.id
+        argumentDocs:
+            "0": '- Disabled, no reverse zone is created.'
+            "1": '- Enabled, generate reverse zone.'
+            "2": '- RFC2317, extends 1 to create the necessary parent zone with the appropriate CNAME resource records for the network, if the network is small enough to require the support described in RFC2317.'
+            allow_dns: (Boolean) Boolean value that indicates if the MAAS DNS resolution is enabled for this subnet. Defaults to true.
+            allow_proxy: (Boolean) Boolean value that indicates if maas-proxy allows requests from this subnet. Defaults to true.
+            cidr: (String) The subnet CIDR.
+            comment: (String) A description of this range.
+            dns_servers: (List of String) List of IP addresses set as DNS servers for the new subnet. This argument is computed if it's not set.
+            end_ip: (String) The end IP for the new IP range (inclusive).
+            fabric: (String) The fabric identifier (ID or name) for the new subnet.
+            gateway_ip: (String) Gateway IP address for the new subnet. This argument is computed if it's not set.
+            id: (String) The ID of this resource.
+            ip_ranges: (Block Set) A set of IP ranges configured on the new subnet. Parameters defined below. This argument is processed in attribute-as-blocks mode. (see below for nested schema)
+            name: (String) The subnet name.
+            rdns_mode: '(Number) How reverse DNS is handled for this subnet. Defaults to 2. Valid options are:'
+            start_ip: (String) The start IP for the new IP range (inclusive).
+            type: '(String) The IP range type. Valid options are: dynamic, reserved.'
+            vlan: (String) The VLAN identifier (ID or traffic segregation ID) for the new subnet. If this is set, the fabric argument is required.
+        importStatements:
+            - |-
+              # MAAS network subnets can be imported using the ID or CIDR. e.g.
+              $ terraform import maas_subnet.tf_subnet 10.77.77.0/24
+    maas_subnet_ip_range:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network subnets IP ranges.
+        name: maas_subnet_ip_range
+        title: maas_subnet_ip_range Resource - terraform-provider-maas
+        examples:
+            - name: dynamic_ip_range
+              manifest: |-
+                {
+                  "end_ip": "10.77.77.60",
+                  "start_ip": "10.77.77.2",
+                  "subnet": "${maas_subnet.tf_subnet_2.id}",
+                  "type": "dynamic"
+                }
+              references:
+                subnet: maas_subnet.tf_subnet_2.id
+            - name: reserved_ip_range
+              manifest: |-
+                {
+                  "comment": "Reserved for Static IPs",
+                  "end_ip": "10.77.77.254",
+                  "start_ip": "10.77.77.200",
+                  "subnet": "${maas_subnet.tf_subnet_2.id}",
+                  "type": "reserved"
+                }
+              references:
+                subnet: maas_subnet.tf_subnet_2.id
+        argumentDocs:
+            comment: (String) A description of this range. This argument is computed if it's not set.
+            end_ip: (String) The end IP for the new IP range (inclusive).
+            id: (String) The ID of this resource.
+            start_ip: (String) The start IP for the new IP range (inclusive).
+            subnet: (String) The subnet identifier (ID or CIDR) for the new IP range.
+            type: '(String) The IP range type. Valid options are: dynamic, reserved.'
+        importStatements:
+            - |-
+              # IP ranges can be imported with the start IP and the end IP. e.g.
+              $ terraform import maas_subnet_ip_range.dynamic_ip_range 10.77.77.2:10.77.77.60
+    maas_tag:
+        subCategory: ""
+        description: Provides a resource to manage a MAAS tag.
+        name: maas_tag
+        title: maas_tag Resource - terraform-provider-maas
+        examples:
+            - name: kvm
+              manifest: |-
+                {
+                  "machines": [
+                    "${maas_machine.virsh_vm1.id}",
+                    "${maas_machine.virsh_vm2.id}",
+                    "${maas_vm_host_machine.kvm[0].id}",
+                    "${maas_vm_host_machine.kvm[1].id}"
+                  ],
+                  "name": "kvm"
+                }
+              references:
+                machines: maas_machine.virsh_vm1.id
+        argumentDocs:
+            comment: (String) A description of what the the tag will be used for in natural language.
+            definition: (String) An XPATH query that is evaluated against the hardware_details stored for all nodes. (i.e. the output of lshw -xml)
+            id: (String) The ID of this resource.
+            kernel_opts: (String) Nodes associated with this tag will add this string to their kernel options when booting. The value overrides the global kernel_opts setting. If more than one tag is associated with a node, command line will be concatenated from all associated tags, in alphabetic tag name order.
+            machines: (Set of String) List of MAAS machines' identifiers (system ID, hostname, or FQDN) that will be tagged with the new tag.
+            name: (String) The new tag name. Because the name will be used in urls, it should be short.
+        importStatements:
+            - |-
+              # An existing tag can be imported using its name. e.g.
+              $ terraform import maas_tag.kvm kvm
+    maas_user:
+        subCategory: ""
+        description: Provides a resource to manage MAAS users.
+        name: maas_user
+        title: maas_user Resource - terraform-provider-maas
+        examples:
+            - name: cloudbase
+              manifest: |-
+                {
+                  "email": "admin@cloudbase.local",
+                  "is_admin": true,
+                  "name": "cloudbase",
+                  "password": "Passw0rd123"
+                }
+        argumentDocs:
+            email: (String) The user e-mail address.
+            id: (String) The ID of this resource.
+            is_admin: (Boolean) Boolean value indicating if the user is a MAAS administrator. Defaults to false.
+            name: (String) The user name.
+            password: (String, Sensitive) The user password.
+        importStatements:
+            - |-
+              # Users can be imported using their name. e.g.
+              $ terraform import maas_user.cloudbase cloudbase
+    maas_vlan:
+        subCategory: ""
+        description: Provides a resource to manage MAAS network VLANs.
+        name: maas_vlan
+        title: maas_vlan Resource - terraform-provider-maas
+        examples:
+            - name: tf_vlan
+              manifest: |-
+                {
+                  "fabric": "${maas_fabric.tf_fabric.id}",
+                  "name": "tf-vlan14",
+                  "space": "${maas_space.tf_space.name}",
+                  "vid": 14
+                }
+              references:
+                fabric: maas_fabric.tf_fabric.id
+                space: maas_space.tf_space.name
+        argumentDocs:
+            dhcp_on: (Boolean) Boolean value. Whether or not DHCP should be managed on the new VLAN. This argument is computed if it's not set.
+            fabric: (String) The identifier (name or ID) of the fabric for the new VLAN.
+            id: (String) The ID of this resource.
+            mtu: (Number) The MTU to use on the new VLAN. This argument is computed if it's not set.
+            name: (String) The name of the new VLAN. This argument is computed if it's not set.
+            space: (String) The space of the new VLAN. Passing in an empty string (or the string undefined) will cause the VLAN to be placed in the undefined space. This argument is computed if it's not set.
+            vid: (Number) The traffic segregation ID for the new VLAN.
+        importStatements:
+            - |-
+              # Existing MAAS VLANs can be imported using the fabric identifier (ID or name) and the VLAN identifier (ID or traffic segregation ID). e.g.
+              $ terraform import maas_vlan.tf_vlan tf-fabric:14
+    maas_vm_host:
+        subCategory: ""
+        description: Provides a resource to manage MAAS VM hosts.
+        name: maas_vm_host
+        title: maas_vm_host Resource - terraform-provider-maas
+        examples:
+            - name: kvm
+              manifest: |-
+                {
+                  "power_address": "qemu+ssh://ubuntu@10.113.1.24/system",
+                  "tags": [
+                    "pod-console-logging",
+                    "virtual",
+                    "kvm"
+                  ],
+                  "type": "virsh"
+                }
+        argumentDocs:
+            cpu_over_commit_ratio: (Number) The new VM host CPU overcommit ratio. This is computed if it's not set.
+            create: (String)
+            default_macvlan_mode: '(String) The new VM host default macvlan mode. Supported values are: bridge, passthru, private, vepa. This is computed if it''s not set.'
+            delete: (String)
+            id: (String) The ID of this resource.
+            machine: '(String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.'
+            memory_over_commit_ratio: (Number) The new VM host RAM memory overcommit ratio. This is computed if it's not set.
+            name: (String) The new VM host name. This is computed if it's not set.
+            pool: (String) The new VM host pool name. This is computed if it's not set.
+            power_address: '(String) Address that gives MAAS access to the VM host power control. For example: qemu+ssh://172.16.99.2/system. The address given here must reachable by the MAAS server. It can''t be set if machine argument is used.'
+            power_pass: (String, Sensitive) User password to use for power control of the VM host. Cannot be set if machine parameter is used.
+            power_user: (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
+            resources_cores_total: (Number) The VM host total number of CPU cores.
+            resources_local_storage_total: (Number) The VM host total local storage (in bytes).
+            resources_memory_total: (Number) The VM host total RAM memory (in MB).
+            tags: (Set of String) A set of tag names to assign to the new VM host. This is computed if it's not set.
+            timeouts: (Block, Optional) (see below for nested schema)
+            type: '(String) The VM host type. Supported values are: lxd, virsh.'
+            zone: (String) The new VM host zone name. This is computed if it's not set.
+        importStatements:
+            - |-
+              # VM hosts can be imported using the ID or the name. e.g.
+              $ terraform import maas_vm_host.kvm vm-host-01
+    maas_vm_host_machine:
+        subCategory: ""
+        description: Provides a resource to manage MAAS VM host machines.
+        name: maas_vm_host_machine
+        title: maas_vm_host_machine Resource - terraform-provider-maas
+        examples:
+            - name: kvm
+              manifest: |-
+                {
+                  "cores": 1,
+                  "count": 2,
+                  "memory": 2048,
+                  "storage_disks": [
+                    {
+                      "size_gigabytes": 15
+                    }
+                  ],
+                  "vm_host": "${maas_vm_host.kvm.id}"
+                }
+              references:
+                vm_host: maas_vm_host.kvm.id
+        argumentDocs:
+            cores: (Number) The number of CPU cores (defaults to 1).
+            create: (String)
+            domain: (String) The VM host machine domain. This is computed if it's not set.
+            fabric: (String) The fabric for the network interface.
+            hostname: (String) The VM host machine hostname. This is computed if it's not set.
+            id: (String) The ID of this resource.
+            ip_address: (String) Static IP configured on the new network interface.
+            memory: (Number) The VM host machine RAM memory, specified in MB (defaults to 2048).
+            name: (String) The network interface name.
+            network_interfaces: (Block List) A list of network interfaces for new the VM host. This argument only works when the VM host is deployed from a registered MAAS machine. Parameters defined below. This argument is processed in attribute-as-blocks mode. (see below for nested schema)
+            pinned_cores: (Number) List of host CPU cores to pin the VM host machine to. If this is passed, the cores parameter is ignored.
+            pool: (String) The VM host machine pool. This is computed if it's not set.
+            size_gigabytes: (Number) The storage disk size, specified in GB.
+            storage_disks: (Block List) A list of storage disks for the new VM host. Parameters defined below. This argument is processed in attribute-as-blocks mode. (see below for nested schema)
+            subnet_cidr: (String) The subnet CIDR for the network interface.
+            timeouts: (Block, Optional) (see below for nested schema)
+            vlan: (String) The VLAN for the network interface.
+            vm_host: (String) ID or name of the VM host used to compose the new machine.
+            zone: (String) The VM host machine zone. This is computed if it's not set.
+        importStatements:
+            - |-
+              # VM host machines can be imported using the identifier of the MAAS machine (system ID, hostname, or FQDN). e.g.
+              $ terraform import maas_vm_host_machine.test machine-02

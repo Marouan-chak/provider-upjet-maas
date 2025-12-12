@@ -1,0 +1,15 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: VLAN
+metadata:
+  name: example-vlan
+spec:
+  forProvider:
+    # Reference the fabric by name
+    fabricRef:
+      name: example-fabric
+    vid: 100
+    name: my-vlan
+    mtu: 1500
+  providerConfigRef:
+    name: default

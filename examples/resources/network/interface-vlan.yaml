@@ -1,0 +1,19 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceVLAN
+metadata:
+  name: example-vlan-interface
+spec:
+  forProvider:
+    # Reference to the machine
+    machineRef:
+      name: example-machine
+    # Reference to the fabric
+    fabricRef:
+      name: example-fabric
+    # Parent interface
+    parent: eth0
+    # VLAN ID (database ID of the VLAN)
+    vlan: 100
+  providerConfigRef:
+    name: default

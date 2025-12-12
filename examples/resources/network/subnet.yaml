@@ -1,0 +1,31 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Subnet
+metadata:
+  name: example-subnet
+spec:
+  forProvider:
+    cidr: "10.10.0.0/24"
+    name: my-subnet
+    # Reference the fabric by name
+    fabric: my-fabric
+    # Reference the VLAN by traffic segregation ID
+    vlan: "100"
+    gatewayIp: "10.10.0.1"
+    dnsServers:
+      - "8.8.8.8"
+      - "8.8.4.4"
+    allowDns: true
+    allowProxy: true
+    # Optional: IP ranges for DHCP
+    ipRanges:
+      - type: dynamic
+        startIp: "10.10.0.100"
+        endIp: "10.10.0.200"
+        comment: "DHCP range"
+      - type: reserved
+        startIp: "10.10.0.1"
+        endIp: "10.10.0.10"
+        comment: "Reserved for infrastructure"
+  providerConfigRef:
+    name: default

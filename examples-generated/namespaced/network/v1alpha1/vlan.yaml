@@ -1,0 +1,17 @@
+apiVersion: network.maas.m.crossplane.io/v1alpha1
+kind: VLAN
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/vlan
+  labels:
+    testing.upbound.io/example-name: tf_vlan
+  name: tf-vlan
+  namespace: crossplane-system
+spec:
+  forProvider:
+    fabricSelector:
+      matchLabels:
+        testing.upbound.io/example-name: tf_fabric
+    name: tf-vlan14
+    space: tf-space
+    vid: 14

@@ -1,0 +1,10 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Space
+metadata:
+  name: example-space
+spec:
+  forProvider:
+    name: my-space
+  providerConfigRef:
+    name: default

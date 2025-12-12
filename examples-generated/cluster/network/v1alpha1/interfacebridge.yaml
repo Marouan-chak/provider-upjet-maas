@@ -1,0 +1,15 @@
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceBridge
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/interfacebridge
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+spec:
+  forProvider:
+    machineSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    name: example
+    parent: ${maas_network_interface_vlan.example.id}

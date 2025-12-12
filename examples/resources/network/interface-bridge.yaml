@@ -1,0 +1,20 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceBridge
+metadata:
+  name: example-bridge
+spec:
+  forProvider:
+    # Reference to the machine
+    machineRef:
+      name: example-machine
+    # Bridge configuration
+    name: br0
+    # Parent interface
+    parent: eth0
+    # Bridge type: standard or ovs (Open vSwitch)
+    bridgeType: standard
+    bridgeStp: false
+    bridgeFd: 15
+  providerConfigRef:
+    name: default

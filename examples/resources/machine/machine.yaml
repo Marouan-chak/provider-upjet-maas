@@ -1,0 +1,36 @@
+---
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: Machine
+metadata:
+  name: example-machine
+spec:
+  forProvider:
+    # PXE boot MAC address (required)
+    pxeMacAddress: "00:11:22:33:44:66"
+    # Power management type (e.g., ipmi, virsh, manual)
+    powerType: manual
+    # Power parameters as JSON (sensitive, stored in spec)
+    powerParametersSecretRef:
+      name: machine-power-params
+      namespace: crossplane-system
+      key: params
+    # Optional fields
+    hostname: my-machine
+    architecture: amd64/generic
+    # Reference to a resource pool
+    poolRef:
+      name: example-pool
+  providerConfigRef:
+    name: default
+---
+# Secret for power parameters
+apiVersion: v1
+kind: Secret
+metadata:
+  name: machine-power-params
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  # For manual power type, empty JSON is fine
+  # For IPMI, you'd include: {"power_address": "10.0.0.1", "power_user": "admin", "power_pass": "password"}
+  params: "{}"

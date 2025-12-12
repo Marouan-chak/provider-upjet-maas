@@ -1,0 +1,23 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceLink
+metadata:
+  name: example-interface-link
+spec:
+  forProvider:
+    # Reference to the machine
+    machineRef:
+      name: example-machine
+    # Network interface identifier (MAC, name, or ID)
+    networkInterface: eth0
+    # Reference to the subnet
+    subnetRef:
+      name: example-subnet
+    # Link mode: AUTO, DHCP, STATIC, or LINK_UP
+    mode: STATIC
+    # IP address (required for STATIC mode)
+    ipAddress: "10.10.0.50"
+    # Set as default gateway
+    defaultGateway: false
+  providerConfigRef:
+    name: default

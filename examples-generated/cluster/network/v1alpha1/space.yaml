@@ -1,0 +1,11 @@
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Space
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/space
+  labels:
+    testing.upbound.io/example-name: tf_space
+  name: tf-space
+spec:
+  forProvider:
+    name: tf-space

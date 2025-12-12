@@ -1,0 +1,23 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceBond
+metadata:
+  name: example-bond
+spec:
+  forProvider:
+    # Reference to the machine
+    machineRef:
+      name: example-machine
+    # Bond configuration
+    name: bond0
+    # Parent interfaces (physical NICs to bond)
+    parents:
+      - eth0
+      - eth1
+    # Bond mode: balance-rr, active-backup, balance-xor, broadcast, 802.3ad, balance-tlb, balance-alb
+    bondMode: "802.3ad"
+    bondMiimon: 100
+    bondLacpRate: fast
+    mtu: 9000
+  providerConfigRef:
+    name: default

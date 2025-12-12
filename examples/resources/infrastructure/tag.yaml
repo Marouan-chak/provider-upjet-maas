@@ -1,0 +1,13 @@
+---
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: Tag
+metadata:
+  name: example-tag
+spec:
+  forProvider:
+    name: my-tag
+    comment: "Example tag for testing"
+    # Optional: XPATH definition for auto-tagging based on hardware
+    # definition: "//node[@id='network']/node[@id='interface']/node[@class='network']"
+  providerConfigRef:
+    name: default

@@ -1,0 +1,17 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: SubnetIPRange
+metadata:
+  name: example-ip-range
+spec:
+  forProvider:
+    # Reference to the subnet
+    subnetRef:
+      name: example-subnet
+    # IP range type: dynamic or reserved
+    type: reserved
+    startIp: "10.10.0.240"
+    endIp: "10.10.0.250"
+    comment: "Reserved for load balancers"
+  providerConfigRef:
+    name: default

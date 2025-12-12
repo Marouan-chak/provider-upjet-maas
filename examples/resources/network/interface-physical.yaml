@@ -1,0 +1,19 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfacePhysical
+metadata:
+  name: example-physical-nic
+spec:
+  forProvider:
+    # Reference to the machine
+    machineRef:
+      name: example-machine
+    # MAC address of the physical interface
+    macAddress: "00:11:22:33:44:77"
+    # Optional configuration
+    name: eth1
+    mtu: 1500
+    tags:
+      - "management"
+  providerConfigRef:
+    name: default

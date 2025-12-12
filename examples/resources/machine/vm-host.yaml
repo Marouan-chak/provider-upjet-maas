@@ -1,0 +1,23 @@
+---
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: VMHost
+metadata:
+  name: example-vmhost
+spec:
+  forProvider:
+    # VM host type: lxd or virsh
+    type: lxd
+    # Power address for the VM host
+    powerAddress: "qemu+ssh://user@192.168.1.100/system"
+    # Optional: credentials for power management
+    # powerUser: "user"
+    # powerPassSecretRef:
+    #   name: vmhost-power-secret
+    #   namespace: crossplane-system
+    #   key: password
+    # Optional configuration
+    name: my-vmhost
+    cpuOverCommitRatio: 1
+    memoryOverCommitRatio: 1
+  providerConfigRef:
+    name: default

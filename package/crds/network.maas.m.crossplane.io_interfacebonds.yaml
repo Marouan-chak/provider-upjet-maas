@@ -1,0 +1,616 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.18.0
+  name: interfacebonds.network.maas.m.crossplane.io
+spec:
+  group: network.maas.m.crossplane.io
+  names:
+    categories:
+    - crossplane
+    - managed
+    - maas
+    kind: InterfaceBond
+    listKind: InterfaceBondList
+    plural: interfacebonds
+    singular: interfacebond
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .metadata.annotations.crossplane\.io/external-name
+      name: EXTERNAL-NAME
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: InterfaceBond is the Schema for the InterfaceBonds API. Provides
+          a resource to manage MAAS network Bonds.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: InterfaceBondSpec defines the desired state of InterfaceBond
+            properties:
+              forProvider:
+                properties:
+                  acceptRa:
+                    description: |-
+                      (Boolean) Accept router advertisements. (IPv6 only).
+                      Accept router advertisements. (IPv6 only).
+                    type: boolean
+                  bondDowndelay:
+                    description: |-
+                      (Number) Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+                      Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+                    type: number
+                  bondLacpRate:
+                    description: |-
+                      (String) Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are fast or slow. (Default: slow).
+                      Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are “fast“ or “slow“. (Default: “slow“).
+                    type: string
+                  bondMiimon:
+                    description: |-
+                      (Number) The link monitoring frequency in milliseconds. (Default: 100).
+                      The link monitoring frequency in milliseconds. (Default: 100).
+                    type: number
+                  bondMode:
+                    description: |-
+                      backup). Supported bonding modes: - balance-rr: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - active-backup: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond's MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - balance-xor: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR'd with destination MAC address XOR packet type ID) modulo slave count]. - broadcast: Transmits everything on all slave interfaces. This mode provides fault tolerance. - 802.3ad: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - balance-tlb: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - balance-alb: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.
+                      The operating mode of the bond. (Default: active-backup). Supported bonding modes: - “balance-rr“: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - “active-backup“: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond's MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - “balance-xor“: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR'd with destination MAC address XOR packet type ID) modulo slave count]. - “broadcast“: Transmits everything on all slave interfaces. This mode provides fault tolerance. - “802.3ad“: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - “balance-tlb“: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - “balance-alb“: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.
+                    type: string
+                  bondNumGratArp:
+                    description: |-
+                      (Number) The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).
+                      The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).
+                    type: number
+                  bondUpdelay:
+                    description: |-
+                      (Number) Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+                      Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+                    type: number
+                  bondXmitHashPolicy:
+                    description: |-
+                      xor, 802.3ad, and tlb modes. Possible values are: layer2, layer2+3, layer3+4, encap2+3, encap3+4. (Default: layer2).
+                      The transmit hash policy to use for slave selection in balance-xor, 802.3ad, and tlb modes. Possible values are: “layer2“, “layer2+3“, “layer3+4“, “encap2+3“, “encap3+4“. (Default: “layer2“).
+                    type: string
+                  macAddress:
+                    description: |-
+                      (String) The bond interface MAC address.
+                      The bond interface MAC address.
+                    type: string
+                  machine:
+                    description: |-
+                      (String) The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+                      The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+                    type: string
+                  machineRef:
+                    description: Reference to a Machine in machine to populate machine.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      namespace:
+                        description: Namespace of the referenced object
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  machineSelector:
+                    description: Selector for a Machine in machine to populate machine.
+                    properties:
+                      matchControllerRef:
+                        description: |-
+                          MatchControllerRef ensures an object with the same controller reference
+                          as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                      namespace:
+                        description: Namespace for the selector
+                        type: string
+                      policy:
+                        description: Policies for selection.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    type: object
+                  mtu:
+                    description: |-
+                      (Number) The MTU of the bond interface.
+                      The MTU of the bond interface.
+                    type: number
+                  name:
+                    description: |-
+                      (String) The bond interface name.
+                      The bond interface name.
+                    type: string
+                  parents:
+                    description: |-
+                      (Set of String) Parent interface names for this bond interface.
+                      Parent interface names for this bond interface.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  tags:
+                    description: |-
+                      (Set of String) A set of tag names to be assigned to the bond interface.
+                      A set of tag names to be assigned to the bond interface.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  vlan:
+                    description: |-
+                      (Number) Database ID of the VLAN the bond interface is connected to.
+                      Database ID of the VLAN the bond interface is connected to.
+                    type: number
+                type: object
+              initProvider:
+                description: |-
+                  THIS IS A BETA FIELD. It will be honored
+                  unless the Management Policies feature flag is disabled.
+                  InitProvider holds the same fields as ForProvider, with the exception
+                  of Identifier and other resource reference fields. The fields that are
+                  in InitProvider are merged into ForProvider when the resource is created.
+                  The same fields are also added to the terraform ignore_changes hook, to
+                  avoid updating them after creation. This is useful for fields that are
+                  required on creation, but we do not desire to update them after creation,
+                  for example because of an external controller is managing them, like an
+                  autoscaler.
+                properties:
+                  acceptRa:
+                    description: |-
+                      (Boolean) Accept router advertisements. (IPv6 only).
+                      Accept router advertisements. (IPv6 only).
+                    type: boolean
+                  bondDowndelay:
+                    description: |-
+                      (Number) Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+                      Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+                    type: number
+                  bondLacpRate:
+                    description: |-
+                      (String) Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are fast or slow. (Default: slow).
+                      Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are “fast“ or “slow“. (Default: “slow“).
+                    type: string
+                  bondMiimon:
+                    description: |-
+                      (Number) The link monitoring frequency in milliseconds. (Default: 100).
+                      The link monitoring frequency in milliseconds. (Default: 100).
+                    type: number
+                  bondMode:
+                    description: |-
+                      backup). Supported bonding modes: - balance-rr: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - active-backup: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond's MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - balance-xor: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR'd with destination MAC address XOR packet type ID) modulo slave count]. - broadcast: Transmits everything on all slave interfaces. This mode provides fault tolerance. - 802.3ad: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - balance-tlb: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - balance-alb: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.
+                      The operating mode of the bond. (Default: active-backup). Supported bonding modes: - “balance-rr“: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - “active-backup“: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond's MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - “balance-xor“: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR'd with destination MAC address XOR packet type ID) modulo slave count]. - “broadcast“: Transmits everything on all slave interfaces. This mode provides fault tolerance. - “802.3ad“: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - “balance-tlb“: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - “balance-alb“: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.
+                    type: string
+                  bondNumGratArp:
+                    description: |-
+                      (Number) The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).
+                      The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).
+                    type: number
+                  bondUpdelay:
+                    description: |-
+                      (Number) Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+                      Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+                    type: number
+                  bondXmitHashPolicy:
+                    description: |-
+                      xor, 802.3ad, and tlb modes. Possible values are: layer2, layer2+3, layer3+4, encap2+3, encap3+4. (Default: layer2).
+                      The transmit hash policy to use for slave selection in balance-xor, 802.3ad, and tlb modes. Possible values are: “layer2“, “layer2+3“, “layer3+4“, “encap2+3“, “encap3+4“. (Default: “layer2“).
+                    type: string
+                  macAddress:
+                    description: |-
+                      (String) The bond interface MAC address.
+                      The bond interface MAC address.
+                    type: string
+                  machine:
+                    description: |-
+                      (String) The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+                      The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+                    type: string
+                  machineRef:
+                    description: Reference to a Machine in machine to populate machine.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      namespace:
+                        description: Namespace of the referenced object
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  machineSelector:
+                    description: Selector for a Machine in machine to populate machine.
+                    properties:
+                      matchControllerRef:
+                        description: |-
+                          MatchControllerRef ensures an object with the same controller reference
+                          as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                      namespace:
+                        description: Namespace for the selector
+                        type: string
+                      policy:
+                        description: Policies for selection.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: |-
+                              Resolution specifies whether resolution of this reference is required.
+                              The default is 'Required', which means the reconcile will fail if the
+                              reference cannot be resolved. 'Optional' means this reference will be
+                              a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: |-
+                              Resolve specifies when this reference should be resolved. The default
+                              is 'IfNotPresent', which will attempt to resolve the reference only when
+                              the corresponding field is not present. Use 'Always' to resolve the
+                              reference on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    type: object
+                  mtu:
+                    description: |-
+                      (Number) The MTU of the bond interface.
+                      The MTU of the bond interface.
+                    type: number
+                  name:
+                    description: |-
+                      (String) The bond interface name.
+                      The bond interface name.
+                    type: string
+                  parents:
+                    description: |-
+                      (Set of String) Parent interface names for this bond interface.
+                      Parent interface names for this bond interface.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  tags:
+                    description: |-
+                      (Set of String) A set of tag names to be assigned to the bond interface.
+                      A set of tag names to be assigned to the bond interface.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  vlan:
+                    description: |-
+                      (Number) Database ID of the VLAN the bond interface is connected to.
+                      Database ID of the VLAN the bond interface is connected to.
+                    type: number
+                type: object
+              managementPolicies:
+                default:
+                - '*'
+                description: |-
+                  THIS IS A BETA FIELD. It is on by default but can be opted out
+                  through a Crossplane feature flag.
+                  ManagementPolicies specify the array of actions Crossplane is allowed to
+                  take on the managed and external resources.
+                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                  and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
+                items:
+                  description: |-
+                    A ManagementAction represents an action that the Crossplane controllers
+                    can take on an external resource.
+                  enum:
+                  - Observe
+                  - Create
+                  - Update
+                  - Delete
+                  - LateInitialize
+                  - '*'
+                  type: string
+                type: array
+              providerConfigRef:
+                default:
+                  kind: ClusterProviderConfig
+                  name: default
+                description: |-
+                  ProviderConfigReference specifies how the provider that will be used to
+                  create, observe, update, and delete this managed resource should be
+                  configured.
+                properties:
+                  kind:
+                    description: Kind of the referenced object.
+                    type: string
+                  name:
+                    description: Name of the referenced object.
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              writeConnectionSecretToRef:
+                description: |-
+                  WriteConnectionSecretToReference specifies the namespace and name of a
+                  Secret to which any connection details for this managed resource should
+                  be written. Connection details frequently include the endpoint, username,
+                  and password required to connect to the managed resource.
+                properties:
+                  name:
+                    description: Name of the secret.
+                    type: string
+                required:
+                - name
+                type: object
+            required:
+            - forProvider
+            type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.name is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
+            - message: spec.forProvider.parents is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.parents)
+                || (has(self.initProvider) && has(self.initProvider.parents))'
+          status:
+            description: InterfaceBondStatus defines the observed state of InterfaceBond.
+            properties:
+              atProvider:
+                properties:
+                  acceptRa:
+                    description: |-
+                      (Boolean) Accept router advertisements. (IPv6 only).
+                      Accept router advertisements. (IPv6 only).
+                    type: boolean
+                  bondDowndelay:
+                    description: |-
+                      (Number) Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+                      Specifies the time, in milliseconds, to wait before disabling a slave after a link failure has been detected.
+                    type: number
+                  bondLacpRate:
+                    description: |-
+                      (String) Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are fast or slow. (Default: slow).
+                      Option specifying the rate at which to ask the link partner to transmit LACPDU packets in 802.3ad mode. Available options are “fast“ or “slow“. (Default: “slow“).
+                    type: string
+                  bondMiimon:
+                    description: |-
+                      (Number) The link monitoring frequency in milliseconds. (Default: 100).
+                      The link monitoring frequency in milliseconds. (Default: 100).
+                    type: number
+                  bondMode:
+                    description: |-
+                      backup). Supported bonding modes: - balance-rr: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - active-backup: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond's MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - balance-xor: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR'd with destination MAC address XOR packet type ID) modulo slave count]. - broadcast: Transmits everything on all slave interfaces. This mode provides fault tolerance. - 802.3ad: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - balance-tlb: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - balance-alb: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.
+                      The operating mode of the bond. (Default: active-backup). Supported bonding modes: - “balance-rr“: Transmit packets in sequential order from the first available slave through the last. This mode provides load balancing and fault tolerance. - “active-backup“: Only one slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The bond's MAC address is externally visible on only one port (network adapter) to avoid confusing the switch. - “balance-xor“: Transmit based on the selected transmit hash policy. The default policy is a simple [(source MAC address XOR'd with destination MAC address XOR packet type ID) modulo slave count]. - “broadcast“: Transmits everything on all slave interfaces. This mode provides fault tolerance. - “802.3ad“: IEEE 802.3ad dynamic link aggregation. Creates aggregation groups that share the same speed and duplex settings. Uses all slaves in the active aggregator according to the 802.3ad specification. - “balance-tlb“: Adaptive transmit load balancing: channel bonding that does not require any special switch support. - “balance-alb“: Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special switch support. The receive load balancing is achieved by ARP negotiation.
+                    type: string
+                  bondNumGratArp:
+                    description: |-
+                      (Number) The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).
+                      The number of peer notifications (IPv4 ARP or IPv6 Neighbour Advertisements) to be issued after a failover. (Default: 1).
+                    type: number
+                  bondUpdelay:
+                    description: |-
+                      (Number) Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+                      Specifies the time, in milliseconds, to wait before enabling a slave after a link recovery has been detected.
+                    type: number
+                  bondXmitHashPolicy:
+                    description: |-
+                      xor, 802.3ad, and tlb modes. Possible values are: layer2, layer2+3, layer3+4, encap2+3, encap3+4. (Default: layer2).
+                      The transmit hash policy to use for slave selection in balance-xor, 802.3ad, and tlb modes. Possible values are: “layer2“, “layer2+3“, “layer3+4“, “encap2+3“, “encap3+4“. (Default: “layer2“).
+                    type: string
+                  id:
+                    description: (String) The ID of this resource.
+                    type: string
+                  macAddress:
+                    description: |-
+                      (String) The bond interface MAC address.
+                      The bond interface MAC address.
+                    type: string
+                  machine:
+                    description: |-
+                      (String) The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+                      The identifier (system ID, hostname, or FQDN) of the machine with the bond interface.
+                    type: string
+                  mtu:
+                    description: |-
+                      (Number) The MTU of the bond interface.
+                      The MTU of the bond interface.
+                    type: number
+                  name:
+                    description: |-
+                      (String) The bond interface name.
+                      The bond interface name.
+                    type: string
+                  parents:
+                    description: |-
+                      (Set of String) Parent interface names for this bond interface.
+                      Parent interface names for this bond interface.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  tags:
+                    description: |-
+                      (Set of String) A set of tag names to be assigned to the bond interface.
+                      A set of tag names to be assigned to the bond interface.
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  vlan:
+                    description: |-
+                      (Number) Database ID of the VLAN the bond interface is connected to.
+                      Database ID of the VLAN the bond interface is connected to.
+                    type: number
+                type: object
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  description: A Condition that may apply to a resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        LastTransitionTime is the last time this condition transitioned from one
+                        status to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A Message containing details about this condition's last transition from
+                        one status to another, if any.
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        ObservedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      type: integer
+                    reason:
+                      description: A Reason for this condition's last transition from
+                        one status to another.
+                      type: string
+                    status:
+                      description: Status of this condition; is it currently True,
+                        False, or Unknown?
+                      type: string
+                    type:
+                      description: |-
+                        Type of this condition. At most one of each condition type may apply to
+                        a resource at any point in time.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: |-
+                  ObservedGeneration is the latest metadata.generation
+                  which resulted in either a ready state, or stalled due to error
+                  it can not recover from without human intervention.
+                format: int64
+                type: integer
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

@@ -9,16 +9,54 @@ import (
 
 	"github.com/crossplane/upjet/v2/pkg/controller"
 
-	resource "github.com/crossplane/upjet-provider-template/internal/controller/namespaced/null/resource"
-	providerconfig "github.com/crossplane/upjet-provider-template/internal/controller/namespaced/providerconfig"
+	domain "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/dns/domain"
+	record "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/dns/record"
+	device "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/infrastructure/device"
+	resourcepool "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/infrastructure/resourcepool"
+	tag "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/infrastructure/tag"
+	user "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/infrastructure/user"
+	machine "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/machine/machine"
+	vmhost "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/machine/vmhost"
+	vmhostmachine "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/machine/vmhostmachine"
+	fabric "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/fabric"
+	interfacebond "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/interfacebond"
+	interfacebridge "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/interfacebridge"
+	interfacelink "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/interfacelink"
+	interfacephysical "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/interfacephysical"
+	interfacevlan "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/interfacevlan"
+	space "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/space"
+	subnet "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/subnet"
+	subnetiprange "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/subnetiprange"
+	vlan "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/network/vlan"
+	providerconfig "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/providerconfig"
+	blockdevice "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced/storage/blockdevice"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		resource.Setup,
+		domain.Setup,
+		record.Setup,
+		device.Setup,
+		resourcepool.Setup,
+		tag.Setup,
+		user.Setup,
+		machine.Setup,
+		vmhost.Setup,
+		vmhostmachine.Setup,
+		fabric.Setup,
+		interfacebond.Setup,
+		interfacebridge.Setup,
+		interfacelink.Setup,
+		interfacephysical.Setup,
+		interfacevlan.Setup,
+		space.Setup,
+		subnet.Setup,
+		subnetiprange.Setup,
+		vlan.Setup,
 		providerconfig.Setup,
+		blockdevice.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
@@ -31,8 +69,27 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 // the supplied manager gated.
 func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		resource.SetupGated,
+		domain.SetupGated,
+		record.SetupGated,
+		device.SetupGated,
+		resourcepool.SetupGated,
+		tag.SetupGated,
+		user.SetupGated,
+		machine.SetupGated,
+		vmhost.SetupGated,
+		vmhostmachine.SetupGated,
+		fabric.SetupGated,
+		interfacebond.SetupGated,
+		interfacebridge.SetupGated,
+		interfacelink.SetupGated,
+		interfacephysical.SetupGated,
+		interfacevlan.SetupGated,
+		space.SetupGated,
+		subnet.SetupGated,
+		subnetiprange.SetupGated,
+		vlan.SetupGated,
 		providerconfig.SetupGated,
+		blockdevice.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err

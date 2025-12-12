@@ -1,0 +1,14 @@
+---
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: Device
+metadata:
+  name: example-device
+spec:
+  forProvider:
+    hostname: my-device
+    description: "Example non-deployable device"
+    # At least one network interface is required
+    networkInterfaces:
+      - macAddress: "00:11:22:33:44:55"
+  providerConfigRef:
+    name: default

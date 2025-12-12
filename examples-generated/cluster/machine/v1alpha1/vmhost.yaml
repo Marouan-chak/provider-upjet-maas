@@ -1,0 +1,16 @@
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: VMHost
+metadata:
+  annotations:
+    meta.upbound.io/example-id: machine/v1alpha1/vmhost
+  labels:
+    testing.upbound.io/example-name: kvm
+  name: kvm
+spec:
+  forProvider:
+    powerAddress: qemu+ssh://ubuntu@10.113.1.24/system
+    tags:
+    - pod-console-logging
+    - virtual
+    - kvm
+    type: virsh

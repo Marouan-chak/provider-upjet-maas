@@ -34,14 +34,14 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	apisCluster "github.com/crossplane/upjet-provider-template/apis/cluster"
-	apisNamespaced "github.com/crossplane/upjet-provider-template/apis/namespaced"
-	"github.com/crossplane/upjet-provider-template/config"
-	"github.com/crossplane/upjet-provider-template/internal/clients"
-	controllerCluster "github.com/crossplane/upjet-provider-template/internal/controller/cluster"
-	controllerNamespaced "github.com/crossplane/upjet-provider-template/internal/controller/namespaced"
-	"github.com/crossplane/upjet-provider-template/internal/features"
-	"github.com/crossplane/upjet-provider-template/internal/version"
+	apisCluster "github.com/Marouan-chak/provider-upjet-maas/apis/cluster"
+	apisNamespaced "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced"
+	"github.com/Marouan-chak/provider-upjet-maas/config"
+	"github.com/Marouan-chak/provider-upjet-maas/internal/clients"
+	controllerCluster "github.com/Marouan-chak/provider-upjet-maas/internal/controller/cluster"
+	controllerNamespaced "github.com/Marouan-chak/provider-upjet-maas/internal/controller/namespaced"
+	"github.com/Marouan-chak/provider-upjet-maas/internal/features"
+	"github.com/Marouan-chak/provider-upjet-maas/internal/version"
 )
 
 const (

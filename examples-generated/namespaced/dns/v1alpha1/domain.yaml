@@ -1,0 +1,14 @@
+apiVersion: dns.maas.m.crossplane.io/v1alpha1
+kind: Domain
+metadata:
+  annotations:
+    meta.upbound.io/example-id: dns/v1alpha1/domain
+  labels:
+    testing.upbound.io/example-name: cloudbase
+  name: cloudbase
+  namespace: crossplane-system
+spec:
+  forProvider:
+    authoritative: true
+    name: cloudbase
+    ttl: 3600

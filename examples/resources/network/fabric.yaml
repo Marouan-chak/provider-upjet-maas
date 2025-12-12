@@ -1,0 +1,10 @@
+---
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Fabric
+metadata:
+  name: example-fabric
+spec:
+  forProvider:
+    name: my-fabric
+  providerConfigRef:
+    name: default
