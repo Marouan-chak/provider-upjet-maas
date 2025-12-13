@@ -1,26 +1,72 @@
-name: Publish Provider Package
+name: Publish Provider Package (Manual)
 
 on:
   workflow_dispatch:
     inputs:
       version:
         description: "Version string to use while publishing the package (e.g. v1.0.0-alpha.1)"
-        default: ''
-        required: false
-      go-version:
-        description: 'Go version to use if building needs to be done'
-        default: '1.24'
-        required: false
+        required: true
+
+env:
+  GO_VERSION: '1.24'
+  DOCKER_BUILDX_VERSION: 'v0.28.0'
 
 jobs:
   publish-provider-package:
-    uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@main
-    with:
-      repository: provider-template
-      version: ${{ github.event.inputs.version }}
-      go-version: ${{ github.event.inputs.go-version }}
-      cleanup-disk: true
-    secrets:
-      GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
-      XPKG_MIRROR_TOKEN: ${{ secrets.XPKG_MIRROR_TOKEN }}
-      XPKG_MIRROR_ACCESS_ID: ${{ secrets.XPKG_MIRROR_ACCESS_ID }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: ${{ env.DOCKER_BUILDX_VERSION }}
+          install: true
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Vendor Dependencies
+        run: make vendor vendor.check
+
+      - name: Build Artifacts
+        run: make -j2 build.all
+        env:
+          BUILD_ARGS: "--load"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Provider Package to ghcr.io
+        run: |
+          PACKAGE_FILE=$(find _output/xpkg -name "*.xpkg" | head -1)
+          if [ -z "$PACKAGE_FILE" ]; then
+            echo "No package file found!"
+            exit 1
+          fi
+
+          curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh
+          sudo mv crossplane /usr/local/bin/
+
+          crossplane xpkg push \
+            --package-files="$PACKAGE_FILE" \
+            ghcr.io/${{ github.repository_owner }}/provider-upjet-maas:${{ github.event.inputs.version }}

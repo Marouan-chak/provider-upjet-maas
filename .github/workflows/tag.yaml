@@ -1,7 +1,7 @@
-name: Tag
+name: Create Release Tag
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       version:
         description: 'Release version (e.g. v0.1.0)'
@@ -9,10 +9,34 @@ on:
       message:
         description: 'Tag message'
         required: true
+        default: 'Release'
 
 jobs:
   tag:
-    uses: crossplane-contrib/provider-workflows/.github/workflows/tag.yml@main
-    with:
-      version: ${{ github.event.inputs.version }}
-      message: ${{ github.event.inputs.message }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and Push Tag
+        run: |
+          git tag -a "${{ github.event.inputs.version }}" -m "${{ github.event.inputs.message }}"
+          git push origin "${{ github.event.inputs.version }}"
+
+      - name: Summary
+        run: |
+          echo "## Tag Created" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Message**: ${{ github.event.inputs.message }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The release workflow will now automatically build and publish the package." >> $GITHUB_STEP_SUMMARY

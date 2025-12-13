@@ -1,21 +1,22 @@
 ---
-# OPTIONAL: Create a VLAN interface on a machine
-# Only needed if using VLAN tagging on the machine
+# VLAN interface on a machine
+# Creates a tagged VLAN interface on top of a physical interface
+# Requires: Machine must exist and be commissioned
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfaceVLAN
 metadata:
-  name: proxmox-vm-vlan-if
+  name: my-vlan-interface
 spec:
   forProvider:
     # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: proxmox-vm
+      name: my-machine
     # Reference to the fabric
     fabricRef:
-      name: provisioning-fabric
-    # Parent interface
+      name: my-fabric
+    # Parent physical interface name
     parent: eth0
-    # VLAN ID
-    vlan: 50
+    # VLAN ID (must match a VLAN defined on the fabric)
+    vlan: 100
   providerConfigRef:
     name: default

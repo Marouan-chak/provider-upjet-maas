@@ -278,7 +278,7 @@ kind: Provider
 metadata:
   name: provider-upjet-maas
 spec:
-  package: docker.io/marouandock/provider-maas:latest
+  package: ghcr.io/marouan-chak/provider-upjet-maas:latest
 EOF
 ```
 

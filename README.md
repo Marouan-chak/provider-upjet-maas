@@ -26,7 +26,8 @@ kind: Provider
 metadata:
   name: provider-upjet-maas
 spec:
-  package: docker.io/marouandock/provider-maas:latest
+  # Replace with your published package or use local development setup
+  package: ghcr.io/marouan-chak/provider-upjet-maas:latest
 ```
 
 ### 2. Create Credentials Secret

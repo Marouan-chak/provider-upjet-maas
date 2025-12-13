@@ -1,22 +1,25 @@
 ---
-# OPTIONAL: Create a network bridge on a machine
-# Useful if deploying VMs/containers on the machine
+# Network bridge on a machine
+# Creates a bridge interface for VM/container networking
+# Requires: Machine must exist and be commissioned
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfaceBridge
 metadata:
-  name: proxmox-vm-bridge
+  name: my-bridge
 spec:
   forProvider:
     # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: proxmox-vm
-    # Bridge configuration
+      name: my-machine
+    # Bridge interface name
     name: br0
-    # Parent interface
+    # Parent physical interface
     parent: eth0
-    # Bridge type: standard or ovs (Open vSwitch)
+    # Bridge type: 'standard' or 'ovs' (Open vSwitch)
     bridgeType: standard
+    # Spanning Tree Protocol (usually disabled for simple setups)
     bridgeStp: false
+    # Forward delay in seconds
     bridgeFd: 15
   providerConfigRef:
     name: default

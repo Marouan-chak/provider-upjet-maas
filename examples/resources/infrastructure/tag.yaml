@@ -1,14 +1,16 @@
 ---
-# Tag for Proxmox VMs
+# Tag for organizing and filtering machines
+# Tags can be applied manually or automatically via XPATH definitions
 apiVersion: infrastructure.maas.crossplane.io/v1alpha1
 kind: Tag
 metadata:
-  name: proxmox-vm-tag
+  name: my-tag
 spec:
   forProvider:
-    name: proxmox-vm
-    comment: "Tag for Proxmox VMs in the lab"
+    name: my-tag
+    comment: "Managed by Crossplane"
     # Optional: XPATH definition for auto-tagging based on hardware
-    # definition: "//node[@id='network']/node[@id='interface']/node[@class='network']"
+    # This example auto-tags machines with Intel network cards
+    # definition: "//node[@id='network']/node[@id='interface']/vendor[contains(.,'Intel')]"
   providerConfigRef:
     name: default
