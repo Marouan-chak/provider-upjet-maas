@@ -5,6 +5,12 @@ cover.out
 /vendor
 /.vendor-new
 .DS_Store
+kubeconfig
+
+# E2E test directories
+e2e/*/.cache
+e2e/*/.work
+e2e/*/_output
 
 # IDE folders
 .vscode/
@@ -15,8 +21,9 @@ cover.out
 debug.txt
 *.log
 
-# Claude Code session files
+# Claude Code files
 .claude/
+CLAUDE.md
 
 # Terraform state (if testing locally)
 *.tfstate
@@ -31,3 +38,6 @@ Thumbs.db
 # Test coverage
 coverage.out
 coverage.html
+
+# Packages
+*.xpkg

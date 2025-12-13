@@ -4,7 +4,7 @@ This page lists all maintainers for this repository.
 
 ## Maintainers
 
-* Marouan Chakroun ([Marouan-chak](https://github.com/Marouan-chak))
+* Marouan Chakran ([Marouan-chak](https://github.com/Marouan-chak))
 
 ## Becoming a Maintainer
 
