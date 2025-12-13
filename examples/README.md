@@ -215,6 +215,7 @@ User (standalone)
 ## Available Resources
 
 ### Network (network.maas.crossplane.io)
+
 | Kind | Description |
 |------|-------------|
 | `Fabric` | Network fabric |
@@ -229,12 +230,14 @@ User (standalone)
 | `InterfaceLink` | Interface-to-subnet link |
 
 ### DNS (dns.maas.crossplane.io)
+
 | Kind | Description |
 |------|-------------|
 | `Domain` | DNS domain |
 | `Record` | DNS record |
 
 ### Infrastructure (infrastructure.maas.crossplane.io)
+
 | Kind | Description |
 |------|-------------|
 | `ResourcePool` | Machine resource pool |
@@ -243,6 +246,7 @@ User (standalone)
 | `Device` | Non-deployable device |
 
 ### Machine (machine.maas.crossplane.io)
+
 | Kind | Description |
 |------|-------------|
 | `Machine` | Physical/virtual machine |
@@ -250,6 +254,7 @@ User (standalone)
 | `VMHostMachine` | VM on a host |
 
 ### Storage (storage.maas.crossplane.io)
+
 | Kind | Description |
 |------|-------------|
 | `BlockDevice` | Block storage device |

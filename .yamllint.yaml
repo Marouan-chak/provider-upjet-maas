@@ -18,6 +18,7 @@ ignore: |
   package/crds/
   apis/
   examples-generated/
+  config/provider-metadata.yaml
   .work/
   _output/
   vendor/

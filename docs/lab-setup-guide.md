@@ -53,6 +53,7 @@ Complete guide to setting up a MAAS lab with Raspberry Pi as the controller and 
 ```
 
 **Key Points:**
+
 - **Home LAN (192.168.0.0/24)**: For accessing MAAS UI and internet
 - **Provisioning Network (192.168.50.0/24)**: Isolated network for PXE/DHCP, no conflict with home router
 - **Raspberry Pi**: Runs MAAS controller, bridges both networks
@@ -63,12 +64,14 @@ Complete guide to setting up a MAAS lab with Raspberry Pi as the controller and 
 ## Prerequisites
 
 ### Hardware
+
 - Raspberry Pi 4 (4GB+ RAM recommended)
 - USB Ethernet adapter for the Pi (provisioning network)
 - Proxmox server with spare NIC (or use existing NIC for dedicated bridge)
 - Ethernet cable connecting Pi USB adapter to Proxmox spare NIC
 
 ### Software
+
 - Ubuntu 24.04 on Raspberry Pi
 - Proxmox VE 8.x on server
 - Kubernetes cluster with Crossplane installed (for provider)
@@ -80,10 +83,12 @@ Complete guide to setting up a MAAS lab with Raspberry Pi as the controller and 
 ### 1.1 Raspberry Pi Interfaces
 
 Your Pi will have two network interfaces:
+
 - `eth0`: Connected to home LAN (for MAAS UI access and internet)
 - `enxXXXXXXXXXXXX`: USB Ethernet adapter (for provisioning network)
 
 Find your USB adapter name:
+
 ```bash
 ip link show
 ```
@@ -135,11 +140,13 @@ network:
 ```
 
 Apply the configuration:
+
 ```bash
 sudo netplan apply
 ```
 
 Verify:
+
 ```bash
 ip addr show enxXXXXXXXXXXXX
 # Should show 192.168.50.1/24
@@ -158,12 +165,14 @@ Login with the admin credentials you created.
 ### 3.1 Identify the Spare NIC
 
 On Proxmox, find the NIC connected to the Pi:
+
 ```bash
 ip link show
 # Look for the interface that's UP when connected to Pi
 ```
 
 If the NIC is bound to vfio (for passthrough), unbind it:
+
 ```bash
 # Check current driver
 readlink -f /sys/bus/pci/devices/0000:XX:00.0/driver
@@ -176,11 +185,13 @@ echo "0000:XX:00.0" | sudo tee /sys/bus/pci/drivers/igc/bind
 ### 3.2 Create Provisioning Bridge (vmbr1)
 
 Edit Proxmox network config:
+
 ```bash
 nano /etc/network/interfaces
 ```
 
 Add:
+
 ```
 auto vmbr1
 iface vmbr1 inet manual
@@ -190,11 +201,13 @@ iface vmbr1 inet manual
 ```
 
 Apply:
+
 ```bash
 ifreload -a
 ```
 
 Verify:
+
 ```bash
 ip -br link | grep vmbr1
 # Should show: vmbr1 UP
@@ -203,12 +216,14 @@ ip -br link | grep vmbr1
 ### 3.3 Verify Link Between Pi and Proxmox
 
 On Proxmox:
+
 ```bash
 ethtool enp87s0
 # Should show: Link detected: yes
 ```
 
 On Pi:
+
 ```bash
 ethtool enxXXXXXXXXXXXX
 # Should show: Link detected: yes
@@ -221,6 +236,7 @@ ethtool enxXXXXXXXXXXXX
 ### 4.1 Sync Boot Images
 
 In MAAS UI:
+
 1. Go to **Images**
 2. Select Ubuntu images for **amd64** architecture
 3. Click **Update selection**
@@ -229,6 +245,7 @@ In MAAS UI:
 ### 4.2 Configure Provisioning Subnet
 
 In MAAS UI:
+
 1. Go to **Subnets**
 2. Find or create subnet `192.168.50.0/24`
 3. Configure:
@@ -249,6 +266,7 @@ In MAAS UI:
 ### 4.4 Get API Key
 
 In MAAS UI:
+
 1. Click your username (top right) → **API keys**
 2. Click **Generate MAAS API key**
 3. Copy the key (format: `consumer:token:secret`)
@@ -283,6 +301,7 @@ EOF
 ```
 
 Wait for provider to be ready:
+
 ```bash
 kubectl get providers -w
 # Wait until HEALTHY=True
@@ -333,6 +352,7 @@ EOF
 ### 6.1 Create a Proxmox VM for MAAS
 
 In Proxmox UI:
+
 1. **Create VM**:
    - **OS**: Do not use any media
    - **System**: Default (BIOS or UEFI)
@@ -506,12 +526,14 @@ kubectl get tags.infrastructure.maas.crossplane.io
 ### VM Not Appearing in MAAS
 
 1. **Check DHCP is working**:
+
    ```bash
    # On Pi, watch for DHCP requests
    sudo tcpdump -i enxXXXXXXXXXXXX port 67 or port 68
    ```
 
 2. **Check PXE/TFTP traffic**:
+
    ```bash
    sudo tcpdump -i enxXXXXXXXXXXXX port 69
    ```
@@ -523,16 +545,19 @@ kubectl get tags.infrastructure.maas.crossplane.io
 ### Provider Not Connecting to MAAS
 
 1. **Check API key**:
+
    ```bash
    kubectl get secret maas-creds -n crossplane-system -o yaml
    ```
 
 2. **Check ProviderConfig**:
+
    ```bash
    kubectl describe providerconfig default
    ```
 
 3. **Check provider logs**:
+
    ```bash
    kubectl logs -n crossplane-system -l pkg.crossplane.io/provider=provider-upjet-maas
    ```
@@ -540,6 +565,7 @@ kubectl get tags.infrastructure.maas.crossplane.io
 ### Resource Stuck in "Creating"
 
 1. **Check resource status**:
+
    ```bash
    kubectl describe <resource-type> <resource-name>
    ```
@@ -549,6 +575,7 @@ kubectl get tags.infrastructure.maas.crossplane.io
 ### Reference Resolution Errors
 
 If you see `referenced field was empty`:
+
 - The referenced resource doesn't exist yet
 - The referenced resource hasn't been assigned an external-name by MAAS
 - Apply resources in order: infrastructure → network → machine
@@ -585,7 +612,7 @@ When applying all resources, follow this order:
 | Pi Provisioning IP | 192.168.50.1 |
 | Provisioning Subnet | 192.168.50.0/24 |
 | DHCP Range | 192.168.50.100-200 |
-| MAAS UI | http://192.168.0.5:5240/MAAS |
+| MAAS UI | <http://192.168.0.5:5240/MAAS> |
 | Proxmox Host | 192.168.0.10 |
 | Proxmox Bridge | vmbr1 |
 

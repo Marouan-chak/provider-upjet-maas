@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is an Upjet-based Crossplane provider for MAAS (Canonical's Metal-as-a-Service). Upjet generates Crossplane providers from Terraform providers, reducing hand-written controller code.
 
-The provider wraps Canonical's Terraform provider for MAAS: https://github.com/canonical/terraform-provider-maas
+The provider wraps Canonical's Terraform provider for MAAS: <https://github.com/canonical/terraform-provider-maas>
 
 ## Build Commands
 
@@ -121,11 +121,13 @@ For local testing without pushing to a registry, use the setup script:
 Authentication uses explicit ProviderConfig fields for non-sensitive settings with the API key stored in a Kubernetes Secret:
 
 **ProviderConfig fields:**
+
 - `apiURL` - MAAS API endpoint (required)
 - `apiVersion` - MAAS API version (default: "2.0")
 - `installationMethod` - optional, "snap" or other
 
 **Secret format:** JSON object stored under one key:
+
 ```yaml
 stringData:
   credentials: |
@@ -133,6 +135,7 @@ stringData:
 ```
 
 Maps to Terraform provider config:
+
 ```hcl
 provider "maas" {
   api_url = "..."
@@ -168,8 +171,8 @@ CI should fail if generated code differs from committed code. Generation must be
 
 ## References
 
-- Upjet provider template: https://github.com/crossplane/upjet-provider-template
-- Upjet project: https://github.com/crossplane/upjet
-- MAAS Terraform provider: https://registry.terraform.io/providers/canonical/maas/latest/docs
-- Crossplane provider packages: https://docs.crossplane.io/latest/packages/providers/
-- Safe start guide: https://docs.crossplane.io/latest/guides/implementing-safe-start/
+- Upjet provider template: <https://github.com/crossplane/upjet-provider-template>
+- Upjet project: <https://github.com/crossplane/upjet>
+- MAAS Terraform provider: <https://registry.terraform.io/providers/canonical/maas/latest/docs>
+- Crossplane provider packages: <https://docs.crossplane.io/latest/packages/providers/>
+- Safe start guide: <https://docs.crossplane.io/latest/guides/implementing-safe-start/>

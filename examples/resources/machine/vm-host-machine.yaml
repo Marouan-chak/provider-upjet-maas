@@ -15,7 +15,7 @@ spec:
     # Storage disks
     storageDisks:
       - sizeGigabytes: 20
-        # pool: "default"  # Optional: storage pool name
+      # pool: "default"  # Optional: storage pool name
     # Network interfaces
     # networkInterfaces:
     #   - name: eth0

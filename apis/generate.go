@@ -16,6 +16,9 @@
 
 // Generate documentation from Terraform docs.
 //go:generate go run github.com/crossplane/upjet/v2/cmd/scraper -n ${TERRAFORM_PROVIDER_SOURCE} -r ../.work/${TERRAFORM_PROVIDER_SOURCE}/${TERRAFORM_DOCS_PATH} -o ../config/provider-metadata.yaml
+// NOTE: The upstream docs include placeholder PEM blocks that can trigger secret scanners.
+// We sanitize these placeholders to keep generated output deterministic and safe for public repos.
+//go:generate go run ../cmd/sanitize-provider-metadata ../config/provider-metadata.yaml
 
 // Run Upjet generator
 //go:generate go run ../cmd/generator/main.go ..
