@@ -56,3 +56,13 @@ repos:
     hooks:
       - id: markdownlint
         args: [--fix, --disable, MD013, MD033, MD040, MD060, MD041, --]
+
+  # Generation determinism (slow) - run on pre-push or manually.
+  - repo: local
+    hooks:
+      - id: make-check-diff
+        name: make check-diff
+        entry: make check-diff
+        language: system
+        pass_filenames: false
+        stages: [pre-push, manual]

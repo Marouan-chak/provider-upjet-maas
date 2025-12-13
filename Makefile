@@ -107,6 +107,15 @@ TERRAFORM := $(TOOLS_HOST_DIR)/terraform-$(TERRAFORM_VERSION)
 TERRAFORM_WORKDIR := $(WORK_DIR)/terraform
 TERRAFORM_PROVIDER_SCHEMA := config/schema.json
 
+# ====================================================================================
+# Tooling needed by generation pipeline
+
+# The Upjet generation pipeline invokes `goimports` directly, so we install it
+# into our tools directory and add it to PATH.
+GOIMPORTS_VERSION ?= v0.40.0
+GOIMPORTS := $(TOOLS_HOST_DIR)/goimports
+export PATH := $(TOOLS_HOST_DIR):$(PATH)
+
 check-terraform-version:
 ifneq ($(TERRAFORM_VERSION_VALID),1)
 	$(error invalid TERRAFORM_VERSION $(TERRAFORM_VERSION), must be less than 1.6.0 since that version introduced a not permitted BSL license))
@@ -136,7 +145,12 @@ pull-docs:
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
 
-generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
+generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs $(GOIMPORTS)
+
+$(GOIMPORTS):
+	@$(INFO) installing goimports $(HOSTOS)-$(HOSTARCH)
+	@GOBIN=$(TOOLS_HOST_DIR) go install golang.org/x/tools/cmd/goimports@$(GOIMPORTS_VERSION)
+	@$(OK) installing goimports $(HOSTOS)-$(HOSTARCH)
 
 .PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version
 # ====================================================================================

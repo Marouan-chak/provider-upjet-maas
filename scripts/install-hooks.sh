@@ -63,14 +63,9 @@ echo "Running pre-push checks..."
 echo "  Running tests..."
 go test ./... -short -count=1 2>&1 | tail -5
 
-# Check if generated code is up to date
-echo "  Checking generated code..."
-make generate 2>/dev/null || true
-if ! git diff --exit-code --quiet; then
-    echo "WARNING: Generated code may be out of date."
-    echo "Run 'make generate' and commit any changes."
-    # Don't fail, just warn
-fi
+# Fail fast if generated code isn't committed
+echo "  Checking generated code (make check-diff)..."
+make check-diff
 
 echo "Pre-push checks passed!"
 EOF
