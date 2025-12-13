@@ -8,6 +8,11 @@ on:
   pull_request: {}
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
 env:
   # Common versions
   GO_VERSION: '1.24'
@@ -17,16 +22,29 @@ env:
 jobs:
   detect-noop:
     runs-on: ubuntu-24.04
-    outputs:
-      noop: ${{ steps.noop.outputs.should_skip }}
     steps:
       - name: Detect No-op Changes
         id: noop
         uses: fkirc/skip-duplicate-actions@v5.3.1
+        continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           paths_ignore: '["**.md", "**.png", "**.jpg"]'
           do_not_skip: '["workflow_dispatch", "schedule", "push"]'
+
+      # If the action can't access the API (common for fork PRs / restricted tokens),
+      # default to "not a noop" so CI keeps running.
+      - name: Default to not skipping on API errors
+        id: noop-fallback
+        run: |
+          if [ -z "${{ steps.noop.outputs.should_skip }}" ]; then
+            echo "should_skip=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_skip=${{ steps.noop.outputs.should_skip }}" >> "$GITHUB_OUTPUT"
+          fi
+
+    outputs:
+      noop: ${{ steps.noop-fallback.outputs.should_skip }}
 
   report-breaking-changes:
     runs-on: ubuntu-24.04
