@@ -15,36 +15,59 @@ Thank you for your interest in contributing to provider-upjet-maas! This documen
 ### Setting Up Development Environment
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Marouan-chak/provider-upjet-maas.git
    cd provider-upjet-maas
    ```
 
 2. **Initialize submodules**
+
    ```bash
    git submodule sync && git submodule update --init --recursive
    ```
 
 3. **Install dependencies**
+
    ```bash
    go mod download
    ```
 
 4. **Run code generation**
+
    ```bash
    go run cmd/generator/main.go "$PWD"
    ```
 
 5. **Build the provider**
+
    ```bash
    make build
    ```
 
 ## Development Workflow
 
+### Setting Up Pre-commit Hooks
+
+We recommend setting up pre-commit hooks to catch issues early:
+
+**Option 1: Using pre-commit (recommended)**
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+**Option 2: Using our install script**
+
+```bash
+./scripts/install-hooks.sh
+```
+
 ### Making Changes
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/my-feature
    ```
@@ -54,21 +77,34 @@ Thank you for your interest in contributing to provider-upjet-maas! This documen
    - Add tests for new functionality
    - Update documentation as needed
 
-3. **Run tests**
+3. **Run quick local checks before committing**
+
+   ```bash
+   make check
+   ```
+
+   This runs:
+   - `make fmt` - Format Go code
+   - `make vet` - Run go vet
+   - `make tidy` - Tidy go modules
+   - `make lint-fast` - Quick lint checks
+
+4. **Run tests**
+
    ```bash
    go test ./...
    ```
 
-4. **Regenerate if you modified config/**
+5. **Regenerate if you modified config/**
+
    ```bash
    go run cmd/generator/main.go "$PWD"
    ```
 
-5. **Verify generation is deterministic**
+6. **Verify generation is deterministic**
+
    ```bash
-   # Running generation twice should produce no diff
-   go run cmd/generator/main.go "$PWD"
-   git diff --exit-code
+   make check-generate
    ```
 
 ### Adding New Resources
@@ -87,6 +123,7 @@ Use the provided script to set up a local Kind cluster:
 ```
 
 To clean up:
+
 ```bash
 ./scripts/setup-kind.sh --cleanup
 ```
