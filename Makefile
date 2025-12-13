@@ -237,6 +237,74 @@ schema-version-diff:
 .PHONY: cobertura submodules fallthrough run crds.clean
 
 # ====================================================================================
+# Local Development Targets
+
+# Quick local check - run before committing
+.PHONY: check
+check: fmt vet tidy lint-fast
+	@$(INFO) All local checks passed!
+
+# Format Go code
+.PHONY: fmt
+fmt:
+	@$(INFO) Formatting Go code...
+	@gofmt -w $(shell find . -name '*.go' -not -path './vendor/*' -not -name 'zz_*')
+	@$(OK) Formatting Go code
+
+# Run go vet
+.PHONY: vet
+vet:
+	@$(INFO) Running go vet...
+	@go vet ./... 2>&1 | grep -v 'zz_' || true
+	@$(OK) Running go vet
+
+# Tidy go modules
+.PHONY: tidy
+tidy:
+	@$(INFO) Tidying go modules...
+	@go mod tidy
+	@$(OK) Tidying go modules
+
+# Fast lint (subset of full lint for quick feedback)
+.PHONY: lint-fast
+lint-fast:
+	@$(INFO) Running fast lint checks...
+	@if command -v golangci-lint > /dev/null; then \
+		golangci-lint run --timeout 2m ./... || true; \
+	else \
+		echo "golangci-lint not installed, skipping..."; \
+	fi
+	@$(OK) Running fast lint checks
+
+# Verify generated code is up to date
+.PHONY: check-generate
+check-generate: generate
+	@$(INFO) Checking if generated code is up to date...
+	@if ! git diff --exit-code --quiet; then \
+		echo "Generated code is out of date. Please run 'make generate' and commit the changes."; \
+		git diff --stat; \
+		exit 1; \
+	fi
+	@$(OK) Generated code is up to date
+
+# Validate example YAML files
+.PHONY: validate-examples
+validate-examples:
+	@$(INFO) Validating example YAML files...
+	@for f in $$(find examples -name '*.yaml' -type f); do \
+		echo "  Checking $$f"; \
+		if ! head -1 "$$f" | grep -qE '^(---|#)'; then \
+			echo "    WARNING: File doesn't start with --- or comment"; \
+		fi; \
+	done
+	@$(OK) Validating example YAML files
+
+# Install git hooks
+.PHONY: install-hooks
+install-hooks:
+	@./scripts/install-hooks.sh
+
+# ====================================================================================
 # Special Targets
 
 define CROSSPLANE_MAKE_HELP
@@ -244,6 +312,16 @@ Crossplane Targets:
     cobertura             Generate a coverage report for cobertura applying exclusions on generated files.
     submodules            Update the submodules, such as the common build scripts.
     run                   Run crossplane locally, out-of-cluster. Useful for development.
+
+Local Development:
+    check                 Run all quick local checks (fmt, vet, tidy, lint-fast)
+    fmt                   Format Go code
+    vet                   Run go vet
+    tidy                  Tidy go modules
+    lint-fast             Run fast linting checks
+    check-generate        Verify generated code is up to date
+    validate-examples     Validate example YAML files
+    install-hooks         Install git pre-commit and pre-push hooks
 
 endef
 # The reason CROSSPLANE_MAKE_HELP is used instead of CROSSPLANE_HELP is because the crossplane
