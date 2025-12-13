@@ -13,14 +13,34 @@ on:
 jobs:
   create-tag:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
-      - name: Create Tag
-        uses: negz/create-tag@39bae1e0932567a58c20dea5a1a0d18358503320 # v1
         with:
-          version: ${{ github.event.inputs.version }}
-          message: ${{ github.event.inputs.message }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Create and push tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG="${{ github.event.inputs.version }}"
+          MSG="${{ github.event.inputs.message }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Ensure we see remote tags too
+          git fetch --tags --force
+
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            echo "Tag ${TAG} already exists. Nothing to do."
+            exit 0
+          fi
+
+          git tag -a "${TAG}" -m "${MSG}"
+          git push origin "refs/tags/${TAG}"
