@@ -15,58 +15,38 @@ Thank you for your interest in contributing to provider-upjet-maas! This documen
 ### Setting Up Development Environment
 
 1. **Clone the repository**
-<<<<<<< HEAD
-=======
 
->>>>>>> 3bb8291 (init)
    ```bash
    git clone https://github.com/Marouan-chak/provider-upjet-maas.git
    cd provider-upjet-maas
    ```
 
 2. **Initialize submodules**
-<<<<<<< HEAD
-=======
 
->>>>>>> 3bb8291 (init)
    ```bash
    git submodule sync && git submodule update --init --recursive
    ```
 
 3. **Install dependencies**
-<<<<<<< HEAD
-=======
 
->>>>>>> 3bb8291 (init)
    ```bash
    go mod download
    ```
 
 4. **Run code generation**
-<<<<<<< HEAD
-=======
 
->>>>>>> 3bb8291 (init)
    ```bash
    go run cmd/generator/main.go "$PWD"
    ```
 
 5. **Build the provider**
-<<<<<<< HEAD
-=======
 
->>>>>>> 3bb8291 (init)
    ```bash
    make build
    ```
 
 ## Development Workflow
 
-<<<<<<< HEAD
-### Making Changes
-
-1. **Create a feature branch**
-=======
 ### Setting Up Pre-commit Hooks
 
 We recommend setting up pre-commit hooks to catch issues early:
@@ -88,7 +68,6 @@ pre-commit install
 
 1. **Create a feature branch**
 
->>>>>>> 3bb8291 (init)
    ```bash
    git checkout -b feature/my-feature
    ```
@@ -98,9 +77,6 @@ pre-commit install
    - Add tests for new functionality
    - Update documentation as needed
 
-<<<<<<< HEAD
-3. **Run tests**
-=======
 3. **Run quick local checks before committing**
 
    ```bash
@@ -115,33 +91,20 @@ pre-commit install
 
 4. **Run tests**
 
->>>>>>> 3bb8291 (init)
    ```bash
    go test ./...
    ```
 
-<<<<<<< HEAD
-4. **Regenerate if you modified config/**
-=======
 5. **Regenerate if you modified config/**
 
->>>>>>> 3bb8291 (init)
    ```bash
    go run cmd/generator/main.go "$PWD"
    ```
 
-<<<<<<< HEAD
-5. **Verify generation is deterministic**
-   ```bash
-   # Running generation twice should produce no diff
-   go run cmd/generator/main.go "$PWD"
-   git diff --exit-code
-=======
 6. **Verify generation is deterministic**
 
    ```bash
    make check-generate
->>>>>>> 3bb8291 (init)
    ```
 
 ### Adding New Resources
@@ -160,10 +123,7 @@ Use the provided script to set up a local Kind cluster:
 ```
 
 To clean up:
-<<<<<<< HEAD
-=======
 
->>>>>>> 3bb8291 (init)
 ```bash
 ./scripts/setup-kind.sh --cleanup
 ```
