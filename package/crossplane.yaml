@@ -2,6 +2,23 @@ apiVersion: meta.pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-upjet-maas
+  annotations:
+    descriptionShort: |
+      A Crossplane provider for managing Canonical MAAS bare-metal infrastructure.
+    meta.crossplane.io/maintainer: Marouan CHAKRAN <marouane.chakran@gmail.com>
+    meta.crossplane.io/source: github.com/Marouan-chak/provider-upjet-maas
+    meta.crossplane.io/license: Apache-2.0
+    friendly-name.meta.crossplane.io: Provider MAAS
+    meta.crossplane.io/description: |
+      A Crossplane provider for managing Canonical MAAS (Metal-as-a-Service) bare-metal infrastructure.
+      Built with Upjet, wrapping the official MAAS Terraform provider to deliver declarative infrastructure management.
+    meta.crossplane.io/readme: |
+      `provider-upjet-maas` is a Crossplane Provider designed to manage Canonical MAAS
+      bare-metal infrastructure through Kubernetes Custom Resources. Available resources
+      and their fields can be found in the [CRD Docs](https://doc.crds.dev/github.com/Marouan-chak/provider-upjet-maas).
+
+      Feel free to create issues or contribute to the development at
+      [Marouan-chak/provider-upjet-maas](https://github.com/Marouan-chak/provider-upjet-maas).
 spec:
   capabilities:
     - SafeStart
