@@ -1,0 +1,13 @@
+apiVersion: dns.maas.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  annotations:
+    meta.upbound.io/example-id: dns/v1alpha1/record
+  labels:
+    testing.upbound.io/example-name: test_a
+  name: test-a
+spec:
+  forProvider:
+    data: 10.99.11.33
+    fqdn: cloudbase
+    type: A/AAAA

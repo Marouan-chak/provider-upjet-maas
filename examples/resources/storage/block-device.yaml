@@ -1,0 +1,24 @@
+---
+apiVersion: storage.maas.crossplane.io/v1alpha1
+kind: BlockDevice
+metadata:
+  name: example-block-device
+spec:
+  forProvider:
+    # Reference to the machine
+    machineRef:
+      name: example-machine
+    # Block device configuration
+    name: sdb
+    sizeGigabytes: 100
+    blockSize: 512
+    # Optional: model and serial for identification
+    # model: "VBOX HARDDISK"
+    # serial: "VB12345678-90abcdef"
+    # Optional: partitions
+    # partitions:
+    #   - sizeGigabytes: 50
+    #     fsType: ext4
+    #     mountPoint: "/data"
+  providerConfigRef:
+    name: default

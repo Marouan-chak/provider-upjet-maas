@@ -1,0 +1,13 @@
+apiVersion: maas.m.crossplane.io/v1beta1
+kind: ClusterProviderConfig
+metadata:
+  name: default
+spec:
+  apiURL: "http://localhost:5240/MAAS"
+  apiVersion: "2.0"
+  credentials:
+    source: Secret
+    secretRef:
+      name: maas-creds
+      namespace: crossplane-system
+      key: credentials

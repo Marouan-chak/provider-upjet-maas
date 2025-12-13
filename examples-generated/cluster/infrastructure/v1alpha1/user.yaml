@@ -1,0 +1,17 @@
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: User
+metadata:
+  annotations:
+    meta.upbound.io/example-id: infrastructure/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: maas_admin
+  name: maas-admin
+spec:
+  forProvider:
+    email: admin@maas.com
+    isAdmin: true
+    name: maas_admin
+    passwordSecretRef:
+      key: example-key
+      name: example-secret
+      namespace: upbound-system

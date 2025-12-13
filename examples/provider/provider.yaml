@@ -1,0 +1,31 @@
+---
+# DeploymentRuntimeConfig for local development
+# Used when loading provider image directly into Kind
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-upjet-maas
+spec:
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        spec:
+          containers:
+            - name: package-runtime
+              # For local development, use the local image
+              image: xpkg.local/provider-upjet-maas:latest
+---
+# Provider installation
+# For production, use the published package from your registry
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-upjet-maas
+spec:
+  runtimeConfigRef:
+    name: provider-upjet-maas
+  # Replace with your published package location
+  # Example: docker.io/YOUR_USERNAME/provider-maas:v0.1.0
+  package: xpkg.local/provider-upjet-maas:latest
+  packagePullPolicy: Always

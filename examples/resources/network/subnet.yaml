@@ -1,0 +1,33 @@
+---
+# Subnet for MAAS provisioning network
+# Update CIDR, gateway, and IP ranges to match your network
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Subnet
+metadata:
+  name: my-subnet
+spec:
+  forProvider:
+    # Network CIDR - update to match your provisioning network
+    cidr: "10.0.0.0/24"
+    name: my-subnet
+    # Reference the fabric by name
+    fabric: my-fabric
+    # Gateway IP for this subnet
+    gatewayIp: "10.0.0.1"
+    dnsServers:
+      - "8.8.8.8"
+      - "8.8.4.4"
+    allowDns: true
+    allowProxy: true
+    # IP ranges for DHCP and reserved addresses
+    ipRanges:
+      - type: dynamic
+        startIp: "10.0.0.100"
+        endIp: "10.0.0.200"
+        comment: "DHCP range for PXE boot"
+      - type: reserved
+        startIp: "10.0.0.1"
+        endIp: "10.0.0.10"
+        comment: "Reserved for infrastructure"
+  providerConfigRef:
+    name: default

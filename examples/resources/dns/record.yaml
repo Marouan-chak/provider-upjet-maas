@@ -1,0 +1,31 @@
+---
+apiVersion: dns.maas.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  name: example-a-record
+spec:
+  forProvider:
+    name: server1
+    # Reference the domain
+    domainRef:
+      name: example-domain
+    type: A/AAAA
+    data: "10.10.0.50"
+    ttl: 300
+  providerConfigRef:
+    name: default
+---
+apiVersion: dns.maas.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  name: example-cname-record
+spec:
+  forProvider:
+    name: www
+    domainRef:
+      name: example-domain
+    type: CNAME
+    data: "server1.example.local."
+    ttl: 300
+  providerConfigRef:
+    name: default

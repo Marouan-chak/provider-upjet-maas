@@ -1,0 +1,12 @@
+---
+# Network space for organizing and grouping subnets
+# Spaces help with network isolation and firewall rules
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Space
+metadata:
+  name: my-space
+spec:
+  forProvider:
+    name: my-space
+  providerConfigRef:
+    name: default

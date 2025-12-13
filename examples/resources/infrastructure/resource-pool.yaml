@@ -1,0 +1,13 @@
+---
+# Resource pool for grouping machines
+# Useful for organizing machines by purpose, team, or environment
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: ResourcePool
+metadata:
+  name: my-pool
+spec:
+  forProvider:
+    name: my-pool
+    description: "Managed by Crossplane"
+  providerConfigRef:
+    name: default

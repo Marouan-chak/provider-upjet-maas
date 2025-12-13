@@ -1,0 +1,26 @@
+---
+# Interface link - assigns IP addressing to a machine's interface
+# Use to configure static IP, DHCP, or link-local addressing
+# Requires: Machine must exist and be commissioned
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceLink
+metadata:
+  name: my-interface-link
+spec:
+  forProvider:
+    # Reference to the machine (must exist and be commissioned)
+    machineRef:
+      name: my-machine
+    # Network interface name on the machine
+    networkInterface: eth0
+    # Reference to the subnet
+    subnetRef:
+      name: my-subnet
+    # Link mode: AUTO, DHCP, STATIC, or LINK_UP
+    mode: STATIC
+    # Static IP from the subnet (only for STATIC mode)
+    ipAddress: "10.0.0.50"
+    # Set as default gateway
+    defaultGateway: true
+  providerConfigRef:
+    name: default

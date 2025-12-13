@@ -1,0 +1,20 @@
+---
+# Physical network interface configuration
+# Use to modify settings on an existing physical NIC
+# Requires: Machine must exist and be commissioned
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfacePhysical
+metadata:
+  name: my-physical-nic
+spec:
+  forProvider:
+    # Reference to the machine (must exist and be commissioned)
+    machineRef:
+      name: my-machine
+    # MAC address of the physical interface - REPLACE WITH YOUR MAC
+    macAddress: "AA:BB:CC:DD:EE:FF"
+    # Interface name
+    name: eth0
+    mtu: 1500
+  providerConfigRef:
+    name: default

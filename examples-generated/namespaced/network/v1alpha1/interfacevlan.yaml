@@ -1,0 +1,19 @@
+apiVersion: network.maas.m.crossplane.io/v1alpha1
+kind: InterfaceVLAN
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/interfacevlan
+  labels:
+    testing.upbound.io/example-name: example
+  name: example
+  namespace: crossplane-system
+spec:
+  forProvider:
+    fabricSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    machineSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    parent: bond0
+    vlan: ${data.maas_vlan.example.id}

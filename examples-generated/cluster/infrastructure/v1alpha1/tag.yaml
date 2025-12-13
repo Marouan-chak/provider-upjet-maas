@@ -1,0 +1,16 @@
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: Tag
+metadata:
+  annotations:
+    meta.upbound.io/example-id: infrastructure/v1alpha1/tag
+  labels:
+    testing.upbound.io/example-name: kvm
+  name: kvm
+spec:
+  forProvider:
+    machines:
+    - ${maas_machine.virsh_vm1.id}
+    - ${maas_machine.virsh_vm2.id}
+    - ${maas_vm_host_machine.kvm[0].id}
+    - ${maas_vm_host_machine.kvm[1].id}
+    name: kvm

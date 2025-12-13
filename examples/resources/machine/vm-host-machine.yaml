@@ -1,0 +1,24 @@
+---
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: VMHostMachine
+metadata:
+  name: example-vm
+spec:
+  forProvider:
+    # Reference to the VM host
+    vmHostRef:
+      name: example-vmhost
+    # VM configuration
+    hostname: my-vm
+    cores: 2
+    memory: 4096  # MB
+    # Storage disks
+    storageDisks:
+      - sizeGigabytes: 20
+      # pool: "default"  # Optional: storage pool name
+    # Network interfaces
+    # networkInterfaces:
+    #   - name: eth0
+    #     subnetCidr: "10.10.0.0/24"
+  providerConfigRef:
+    name: default
