@@ -9,7 +9,7 @@
 package v1alpha1
 
 import (
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	"github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -428,6 +428,11 @@ func (in *PartitionsObservation) DeepCopyInto(out *PartitionsObservation) {
 	if in.FsType != nil {
 		in, out := &in.FsType, &out.FsType
 		*out = new(string)
+		**out = **in
+	}
+	if in.ID != nil {
+		in, out := &in.ID, &out.ID
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Label != nil {

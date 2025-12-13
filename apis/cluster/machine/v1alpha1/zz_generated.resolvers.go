@@ -8,9 +8,9 @@ package v1alpha1
 
 import (
 	"context"
-
 	v1alpha1 "github.com/Marouan-chak/provider-upjet-maas/apis/cluster/infrastructure/v1alpha1"
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
+	resource "github.com/crossplane/upjet/v2/pkg/resource"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -24,7 +24,7 @@ func (mg *Machine) ResolveReferences(ctx context.Context, c client.Reader) error
 
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Pool),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.PoolRef,
 		Selector:     mg.Spec.ForProvider.PoolSelector,
@@ -41,7 +41,7 @@ func (mg *Machine) ResolveReferences(ctx context.Context, c client.Reader) error
 
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Pool),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.PoolRef,
 		Selector:     mg.Spec.InitProvider.PoolSelector,
@@ -68,7 +68,7 @@ func (mg *VMHost) ResolveReferences(ctx context.Context, c client.Reader) error 
 
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Pool),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.PoolRef,
 		Selector:     mg.Spec.ForProvider.PoolSelector,
@@ -85,7 +85,7 @@ func (mg *VMHost) ResolveReferences(ctx context.Context, c client.Reader) error 
 
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Pool),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.PoolRef,
 		Selector:     mg.Spec.InitProvider.PoolSelector,
@@ -112,7 +112,7 @@ func (mg *VMHostMachine) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.VMHost),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.VMHostRef,
 		Selector:     mg.Spec.ForProvider.VMHostSelector,
@@ -129,7 +129,7 @@ func (mg *VMHostMachine) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.VMHost),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.VMHostRef,
 		Selector:     mg.Spec.InitProvider.VMHostSelector,

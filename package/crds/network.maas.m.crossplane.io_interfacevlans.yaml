@@ -35,7 +35,7 @@ spec:
     schema:
       openAPIV3Schema:
         description: InterfaceVLAN is the Schema for the InterfaceVLANs API. Provides
-          a resource to manage MAAS network Vlans.
+          a resource to manage MAAS network VLANs.
         properties:
           apiVersion:
             description: |-
@@ -239,6 +239,11 @@ spec:
                       (Number) The MTU of the VLAN interface.
                       The MTU of the VLAN interface.
                     type: number
+                  name:
+                    description: |-
+                      (String) The name of the VLAN interface.
+                      The name of the VLAN interface.
+                    type: string
                   parent:
                     description: |-
                       (String) Parent interface name for this VLAN interface.
@@ -451,6 +456,11 @@ spec:
                       (Number) The MTU of the VLAN interface.
                       The MTU of the VLAN interface.
                     type: number
+                  name:
+                    description: |-
+                      (String) The name of the VLAN interface.
+                      The name of the VLAN interface.
+                    type: string
                   parent:
                     description: |-
                       (String) Parent interface name for this VLAN interface.
@@ -533,6 +543,10 @@ spec:
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.parent)
                 || (has(self.initProvider) && has(self.initProvider.parent))'
+            - message: spec.forProvider.vlan is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.vlan)
+                || (has(self.initProvider) && has(self.initProvider.vlan))'
           status:
             description: InterfaceVLANStatus defines the observed state of InterfaceVLAN.
             properties:
@@ -561,6 +575,11 @@ spec:
                       (Number) The MTU of the VLAN interface.
                       The MTU of the VLAN interface.
                     type: number
+                  name:
+                    description: |-
+                      (String) The name of the VLAN interface.
+                      The name of the VLAN interface.
+                    type: string
                   parent:
                     description: |-
                       (String) Parent interface name for this VLAN interface.

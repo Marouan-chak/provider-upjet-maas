@@ -32,6 +32,7 @@ type UserInitParameters struct {
 	// The user password.
 	PasswordSecretRef v1.LocalSecretKeySelector `json:"passwordSecretRef" tf:"-"`
 
+	// (String) If provided, resources owned by the deleted user will be transferred to this user.
 	// If provided, resources owned by the deleted user will be transferred to this user.
 	TransferToUser *string `json:"transferToUser,omitempty" tf:"transfer_to_user,omitempty"`
 }
@@ -53,6 +54,7 @@ type UserObservation struct {
 	// The user name.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// (String) If provided, resources owned by the deleted user will be transferred to this user.
 	// If provided, resources owned by the deleted user will be transferred to this user.
 	TransferToUser *string `json:"transferToUser,omitempty" tf:"transfer_to_user,omitempty"`
 }
@@ -79,6 +81,7 @@ type UserParameters struct {
 	// +kubebuilder:validation:Optional
 	PasswordSecretRef v1.LocalSecretKeySelector `json:"passwordSecretRef" tf:"-"`
 
+	// (String) If provided, resources owned by the deleted user will be transferred to this user.
 	// If provided, resources owned by the deleted user will be transferred to this user.
 	// +kubebuilder:validation:Optional
 	TransferToUser *string `json:"transferToUser,omitempty" tf:"transfer_to_user,omitempty"`

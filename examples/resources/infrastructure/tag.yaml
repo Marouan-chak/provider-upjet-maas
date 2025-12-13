@@ -1,12 +1,13 @@
 ---
+# Tag for Proxmox VMs
 apiVersion: infrastructure.maas.crossplane.io/v1alpha1
 kind: Tag
 metadata:
-  name: example-tag
+  name: proxmox-vm-tag
 spec:
   forProvider:
-    name: my-tag
-    comment: "Example tag for testing"
+    name: proxmox-vm
+    comment: "Tag for Proxmox VMs in the lab"
     # Optional: XPATH definition for auto-tagging based on hardware
     # definition: "//node[@id='network']/node[@id='interface']/node[@class='network']"
   providerConfigRef:

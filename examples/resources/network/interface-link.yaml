@@ -1,23 +1,25 @@
 ---
+# OPTIONAL: Assign a static IP to a machine's interface
+# Only use after machine is commissioned in MAAS
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfaceLink
 metadata:
-  name: example-interface-link
+  name: proxmox-vm-static-ip
 spec:
   forProvider:
-    # Reference to the machine
+    # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: example-machine
-    # Network interface identifier (MAC, name, or ID)
+      name: proxmox-vm
+    # Network interface name on the machine
     networkInterface: eth0
-    # Reference to the subnet
+    # Reference to the provisioning subnet
     subnetRef:
-      name: example-subnet
+      name: provisioning-subnet
     # Link mode: AUTO, DHCP, STATIC, or LINK_UP
     mode: STATIC
-    # IP address (required for STATIC mode)
-    ipAddress: "10.10.0.50"
+    # Static IP from the provisioning subnet
+    ipAddress: "192.168.50.50"
     # Set as default gateway
-    defaultGateway: false
+    defaultGateway: true
   providerConfigRef:
     name: default

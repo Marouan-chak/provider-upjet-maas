@@ -4,8 +4,8 @@ kind: ProviderConfig
 metadata:
   name: default
 spec:
-  # Update this to your MAAS API URL
-  apiURL: "http://192.168.0.21:5240/MAAS"
+  # MAAS API URL - Raspberry Pi on home LAN
+  apiURL: "http://192.168.0.5:5240/MAAS"
   apiVersion: "2.0"
   credentials:
     source: Secret

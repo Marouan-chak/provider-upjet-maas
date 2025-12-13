@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: maas-creds
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  credentials: |
+    { "apiKey": "M6c4EPQcYedB8bTRFs:PtkMMm4UjDlvrJX2Et:AqqV7D3PTtnavqmSyzbMaVsiWI7WHDda" }

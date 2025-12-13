@@ -30,6 +30,7 @@ type SubnetIPRangeInitParameters struct {
 	// (String) The subnet identifier (ID or CIDR) for the new IP range.
 	// The subnet identifier (ID or CIDR) for the new IP range.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.Subnet
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("cidr", true)
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 
 	// Reference to a Subnet in network to populate subnet.
@@ -91,6 +92,7 @@ type SubnetIPRangeParameters struct {
 	// (String) The subnet identifier (ID or CIDR) for the new IP range.
 	// The subnet identifier (ID or CIDR) for the new IP range.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.Subnet
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("cidr", true)
 	// +kubebuilder:validation:Optional
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 

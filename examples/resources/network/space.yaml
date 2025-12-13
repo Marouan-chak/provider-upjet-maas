@@ -1,10 +1,11 @@
 ---
+# Network space for organizing subnets
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: Space
 metadata:
-  name: example-space
+  name: lab-space
 spec:
   forProvider:
-    name: my-space
+    name: lab-space
   providerConfigRef:
     name: default

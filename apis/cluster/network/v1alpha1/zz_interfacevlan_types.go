@@ -22,6 +22,7 @@ type InterfaceVLANInitParameters struct {
 	// (String) The identifier (name or ID) of the fabric for the new VLAN interface.
 	// The identifier (name or ID) of the fabric for the new VLAN interface.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.Fabric
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	Fabric *string `json:"fabric,omitempty" tf:"fabric,omitempty"`
 
 	// Reference to a Fabric in network to populate fabric.
@@ -35,6 +36,7 @@ type InterfaceVLANInitParameters struct {
 	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the VLAN interface.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the VLAN interface.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/machine/v1alpha1.Machine
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
 	// Reference to a Machine in machine to populate machine.
@@ -49,6 +51,7 @@ type InterfaceVLANInitParameters struct {
 	// The MTU of the VLAN interface.
 	Mtu *float64 `json:"mtu,omitempty" tf:"mtu,omitempty"`
 
+	// (String) The name of the VLAN interface.
 	// The name of the VLAN interface.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
@@ -87,6 +90,7 @@ type InterfaceVLANObservation struct {
 	// The MTU of the VLAN interface.
 	Mtu *float64 `json:"mtu,omitempty" tf:"mtu,omitempty"`
 
+	// (String) The name of the VLAN interface.
 	// The name of the VLAN interface.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
@@ -114,6 +118,7 @@ type InterfaceVLANParameters struct {
 	// (String) The identifier (name or ID) of the fabric for the new VLAN interface.
 	// The identifier (name or ID) of the fabric for the new VLAN interface.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.Fabric
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	// +kubebuilder:validation:Optional
 	Fabric *string `json:"fabric,omitempty" tf:"fabric,omitempty"`
 
@@ -128,6 +133,7 @@ type InterfaceVLANParameters struct {
 	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the VLAN interface.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the VLAN interface.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/machine/v1alpha1.Machine
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	// +kubebuilder:validation:Optional
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
@@ -144,6 +150,7 @@ type InterfaceVLANParameters struct {
 	// +kubebuilder:validation:Optional
 	Mtu *float64 `json:"mtu,omitempty" tf:"mtu,omitempty"`
 
+	// (String) The name of the VLAN interface.
 	// The name of the VLAN interface.
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
@@ -192,7 +199,7 @@ type InterfaceVLANStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// InterfaceVLAN is the Schema for the InterfaceVLANs API. Provides a resource to manage MAAS network Vlans.
+// InterfaceVLAN is the Schema for the InterfaceVLANs API. Provides a resource to manage MAAS network VLANs.
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"

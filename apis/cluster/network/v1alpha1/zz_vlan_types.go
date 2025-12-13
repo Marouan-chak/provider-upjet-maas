@@ -22,6 +22,7 @@ type VLANInitParameters struct {
 	// (String) The identifier (name or ID) of the fabric for the new VLAN.
 	// The identifier (name or ID) of the fabric for the new VLAN.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.Fabric
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	Fabric *string `json:"fabric,omitempty" tf:"fabric,omitempty"`
 
 	// Reference to a Fabric in network to populate fabric.
@@ -89,6 +90,7 @@ type VLANParameters struct {
 	// (String) The identifier (name or ID) of the fabric for the new VLAN.
 	// The identifier (name or ID) of the fabric for the new VLAN.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.Fabric
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	// +kubebuilder:validation:Optional
 	Fabric *string `json:"fabric,omitempty" tf:"fabric,omitempty"`
 

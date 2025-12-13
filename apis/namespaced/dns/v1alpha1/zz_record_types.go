@@ -23,6 +23,7 @@ type RecordInitParameters struct {
 	// (String) The domain of the new DNS record. Used in conjunction with name. It conflicts with fqdn argument.
 	// The domain of the new DNS record. Used in conjunction with `name`. It conflicts with `fqdn` argument.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/dns/v1alpha1.Domain
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	Domain *string `json:"domain,omitempty" tf:"domain,omitempty"`
 
 	// Reference to a Domain in dns to populate domain.
@@ -90,6 +91,7 @@ type RecordParameters struct {
 	// (String) The domain of the new DNS record. Used in conjunction with name. It conflicts with fqdn argument.
 	// The domain of the new DNS record. Used in conjunction with `name`. It conflicts with `fqdn` argument.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/dns/v1alpha1.Domain
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	// +kubebuilder:validation:Optional
 	Domain *string `json:"domain,omitempty" tf:"domain,omitempty"`
 

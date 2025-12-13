@@ -8,8 +8,8 @@ package v1alpha1
 
 import (
 	"context"
-
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
+	resource "github.com/crossplane/upjet/v2/pkg/resource"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -23,7 +23,7 @@ func (mg *Record) ResolveReferences(ctx context.Context, c client.Reader) error 
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Domain),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.DomainRef,
 		Selector:     mg.Spec.ForProvider.DomainSelector,
@@ -40,7 +40,7 @@ func (mg *Record) ResolveReferences(ctx context.Context, c client.Reader) error 
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Domain),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.DomainRef,
 		Selector:     mg.Spec.InitProvider.DomainSelector,

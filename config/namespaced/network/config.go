@@ -1,90 +1,106 @@
 package network
 
 import (
-	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
+	"github.com/crossplane/upjet/v2/pkg/config"
 )
 
 // Configure configures the network group resources
-func Configure(p *ujconfig.Provider) {
+func Configure(p *config.Provider) {
 	// Core network resources
-	p.AddResourceConfigurator("maas_fabric", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_fabric", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "Fabric"
 	})
 
-	p.AddResourceConfigurator("maas_vlan", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_vlan", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "VLAN"
-		r.References["fabric"] = ujconfig.Reference{
+		// VLAN references fabric by name
+		r.References["fabric"] = config.Reference{
 			TerraformName: "maas_fabric",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_subnet", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_subnet", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "Subnet"
-		r.References["vlan"] = ujconfig.Reference{
+		// Subnet references VLAN - VLAN uses numeric ID, so we extract from atProvider
+		r.References["vlan"] = config.Reference{
 			TerraformName: "maas_vlan",
+			// VLAN is identified by numeric ID in MAAS
+			Extractor: `github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_subnet_ip_range", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_subnet_ip_range", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "SubnetIPRange"
-		r.References["subnet"] = ujconfig.Reference{
+		// SubnetIPRange references subnet by CIDR
+		r.References["subnet"] = config.Reference{
 			TerraformName: "maas_subnet",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("cidr", true)`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_space", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_space", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "Space"
 	})
 
 	// Network interface resources
-	p.AddResourceConfigurator("maas_network_interface_physical", func(r *ujconfig.Resource) {
+	// These reference machines by system_id (hostname can also work in MAAS API)
+	p.AddResourceConfigurator("maas_network_interface_physical", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "InterfacePhysical"
-		r.References["machine"] = ujconfig.Reference{
+		// Machine is identified by system_id in MAAS, which is the external-name
+		r.References["machine"] = config.Reference{
 			TerraformName: "maas_machine",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_network_interface_bond", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_network_interface_bond", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "InterfaceBond"
-		r.References["machine"] = ujconfig.Reference{
+		r.References["machine"] = config.Reference{
 			TerraformName: "maas_machine",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_network_interface_bridge", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_network_interface_bridge", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "InterfaceBridge"
-		r.References["machine"] = ujconfig.Reference{
+		r.References["machine"] = config.Reference{
 			TerraformName: "maas_machine",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_network_interface_vlan", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_network_interface_vlan", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "InterfaceVLAN"
-		r.References["machine"] = ujconfig.Reference{
+		r.References["machine"] = config.Reference{
 			TerraformName: "maas_machine",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()`,
 		}
-		r.References["fabric"] = ujconfig.Reference{
+		r.References["fabric"] = config.Reference{
 			TerraformName: "maas_fabric",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)`,
 		}
 	})
 
-	p.AddResourceConfigurator("maas_network_interface_link", func(r *ujconfig.Resource) {
+	p.AddResourceConfigurator("maas_network_interface_link", func(r *config.Resource) {
 		r.ShortGroup = "network"
 		r.Kind = "InterfaceLink"
-		r.References["machine"] = ujconfig.Reference{
+		r.References["machine"] = config.Reference{
 			TerraformName: "maas_machine",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()`,
 		}
-		r.References["subnet"] = ujconfig.Reference{
+		r.References["subnet"] = config.Reference{
 			TerraformName: "maas_subnet",
+			Extractor:     `github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("cidr", true)`,
 		}
 	})
 }

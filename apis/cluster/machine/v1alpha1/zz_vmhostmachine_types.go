@@ -159,6 +159,7 @@ type VMHostMachineInitParameters struct {
 	// (String) ID or name of the VM host used to compose the new machine.
 	// ID or name of the VM host used to compose the new machine.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/machine/v1alpha1.VMHost
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	VMHost *string `json:"vmHost,omitempty" tf:"vm_host,omitempty"`
 
 	// Reference to a VMHost in machine to populate vmHost.
@@ -265,6 +266,7 @@ type VMHostMachineParameters struct {
 	// (String) ID or name of the VM host used to compose the new machine.
 	// ID or name of the VM host used to compose the new machine.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/machine/v1alpha1.VMHost
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	// +kubebuilder:validation:Optional
 	VMHost *string `json:"vmHost,omitempty" tf:"vm_host,omitempty"`
 

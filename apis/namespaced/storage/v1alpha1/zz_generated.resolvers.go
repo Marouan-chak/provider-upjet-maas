@@ -8,9 +8,9 @@ package v1alpha1
 
 import (
 	"context"
-
 	v1alpha1 "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/machine/v1alpha1"
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
+	resource "github.com/crossplane/upjet/v2/pkg/resource"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -24,7 +24,7 @@ func (mg *BlockDevice) ResolveReferences(ctx context.Context, c client.Reader) e
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.MachineRef,
 		Selector:     mg.Spec.ForProvider.MachineSelector,
@@ -41,7 +41,7 @@ func (mg *BlockDevice) ResolveReferences(ctx context.Context, c client.Reader) e
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.MachineRef,
 		Selector:     mg.Spec.InitProvider.MachineSelector,

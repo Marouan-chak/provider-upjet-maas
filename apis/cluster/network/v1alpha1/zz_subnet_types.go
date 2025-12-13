@@ -118,6 +118,7 @@ type SubnetInitParameters struct {
 	// (String) The VLAN identifier (ID or traffic segregation ID) for the new subnet. If this is set, the fabric argument is required.
 	// The VLAN identifier (ID or traffic segregation ID) for the new subnet. If this is set, the `fabric` argument is required.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.VLAN
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	Vlan *string `json:"vlan,omitempty" tf:"vlan,omitempty"`
 
 	// Reference to a VLAN in network to populate vlan.
@@ -231,6 +232,7 @@ type SubnetParameters struct {
 	// (String) The VLAN identifier (ID or traffic segregation ID) for the new subnet. If this is set, the fabric argument is required.
 	// The VLAN identifier (ID or traffic segregation ID) for the new subnet. If this is set, the `fabric` argument is required.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/network/v1alpha1.VLAN
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	// +kubebuilder:validation:Optional
 	Vlan *string `json:"vlan,omitempty" tf:"vlan,omitempty"`
 

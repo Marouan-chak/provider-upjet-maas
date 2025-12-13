@@ -22,6 +22,7 @@ type InterfacePhysicalInitParameters struct {
 	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the physical network interface.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the physical network interface.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/machine/v1alpha1.Machine
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
 	// Reference to a Machine in machine to populate machine.
@@ -91,6 +92,7 @@ type InterfacePhysicalParameters struct {
 	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the physical network interface.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the physical network interface.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/machine/v1alpha1.Machine
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	// +kubebuilder:validation:Optional
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 

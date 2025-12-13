@@ -1,13 +1,15 @@
 ---
+# OPTIONAL: Create a network bridge on a machine
+# Useful if deploying VMs/containers on the machine
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfaceBridge
 metadata:
-  name: example-bridge
+  name: proxmox-vm-bridge
 spec:
   forProvider:
-    # Reference to the machine
+    # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: example-machine
+      name: proxmox-vm
     # Bridge configuration
     name: br0
     # Parent interface

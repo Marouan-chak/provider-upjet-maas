@@ -9,7 +9,7 @@
 package v1alpha1
 
 import (
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	"github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -1084,6 +1084,11 @@ func (in *InterfaceLinkInitParameters) DeepCopyInto(out *InterfaceLinkInitParame
 		*out = new(bool)
 		**out = **in
 	}
+	if in.Device != nil {
+		in, out := &in.Device, &out.Device
+		*out = new(string)
+		**out = **in
+	}
 	if in.IPAddress != nil {
 		in, out := &in.IPAddress, &out.IPAddress
 		*out = new(string)
@@ -1181,6 +1186,11 @@ func (in *InterfaceLinkObservation) DeepCopyInto(out *InterfaceLinkObservation) 
 		*out = new(bool)
 		**out = **in
 	}
+	if in.Device != nil {
+		in, out := &in.Device, &out.Device
+		*out = new(string)
+		**out = **in
+	}
 	if in.ID != nil {
 		in, out := &in.ID, &out.ID
 		*out = new(string)
@@ -1229,6 +1239,11 @@ func (in *InterfaceLinkParameters) DeepCopyInto(out *InterfaceLinkParameters) {
 	if in.DefaultGateway != nil {
 		in, out := &in.DefaultGateway, &out.DefaultGateway
 		*out = new(bool)
+		**out = **in
+	}
+	if in.Device != nil {
+		in, out := &in.Device, &out.Device
+		*out = new(string)
 		**out = **in
 	}
 	if in.IPAddress != nil {
@@ -1665,6 +1680,11 @@ func (in *InterfaceVLANInitParameters) DeepCopyInto(out *InterfaceVLANInitParame
 		*out = new(float64)
 		**out = **in
 	}
+	if in.Name != nil {
+		in, out := &in.Name, &out.Name
+		*out = new(string)
+		**out = **in
+	}
 	if in.Parent != nil {
 		in, out := &in.Parent, &out.Parent
 		*out = new(string)
@@ -1758,6 +1778,11 @@ func (in *InterfaceVLANObservation) DeepCopyInto(out *InterfaceVLANObservation) 
 		*out = new(float64)
 		**out = **in
 	}
+	if in.Name != nil {
+		in, out := &in.Name, &out.Name
+		*out = new(string)
+		**out = **in
+	}
 	if in.Parent != nil {
 		in, out := &in.Parent, &out.Parent
 		*out = new(string)
@@ -1832,6 +1857,11 @@ func (in *InterfaceVLANParameters) DeepCopyInto(out *InterfaceVLANParameters) {
 	if in.Mtu != nil {
 		in, out := &in.Mtu, &out.Mtu
 		*out = new(float64)
+		**out = **in
+	}
+	if in.Name != nil {
+		in, out := &in.Name, &out.Name
+		*out = new(string)
 		**out = **in
 	}
 	if in.Parent != nil {

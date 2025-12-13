@@ -4,8 +4,8 @@ metadata:
   annotations:
     meta.upbound.io/example-id: machine/v1alpha1/vmhost
   labels:
-    testing.upbound.io/example-name: kvm
-  name: kvm
+    testing.upbound.io/example-name: kvm_virsh
+  name: kvm-virsh
   namespace: crossplane-system
 spec:
   forProvider:

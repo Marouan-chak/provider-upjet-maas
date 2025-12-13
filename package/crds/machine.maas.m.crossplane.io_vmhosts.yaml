@@ -59,6 +59,20 @@ spec:
             properties:
               forProvider:
                 properties:
+                  certificateSecretRef:
+                    description: |-
+                      (String, Sensitive) Certificate to use for power control of a LXD VM host. It can't be set if machine, power_user or power_pass parameters are used.
+                      Certificate to use for power control of a LXD VM host. It can't be set if `machine`, `power_user` or `power_pass` parameters are used.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   cpuOverCommitRatio:
                     description: |-
                       (Number) The new VM host CPU overcommit ratio. This is computed if it's not set.
@@ -69,10 +83,52 @@ spec:
                       (String) The new VM host default macvlan mode. Supported values are: bridge, passthru, private, vepa. This is computed if it's not set.
                       The new VM host default macvlan mode. Supported values are: `bridge`, `passthru`, `private`, `vepa`. This is computed if it's not set.
                     type: string
+                  deployParams:
+                    description: |-
+                      (Block List, Max: 1) Nested argument with the config used to deploy the machine specified using machine. (see below for nested schema)
+                      Nested argument with the config used to deploy the machine specified using `machine`.
+                    items:
+                      properties:
+                        distroSeries:
+                          description: |-
+                            (String) The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
+                            The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
+                          type: string
+                        enableHwSync:
+                          description: |-
+                            (Boolean) Periodically sync hardware
+                            Periodically sync hardware
+                          type: boolean
+                        hweKernel:
+                          description: |-
+                            (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+                            Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+                          type: string
+                        userData:
+                          description: |-
+                            init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
+                            Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with `file("/tmp/user-data.txt")`, where `/tmp/user-data.txt` is a cloud-init script.
+                          type: string
+                      type: object
+                    type: array
+                  keySecretRef:
+                    description: |-
+                      (String, Sensitive) Certificate key to use for power control of a LXD VM host. It can't be set if machine, power_user, or power_pass parameters are used.
+                      Certificate key to use for power control of a LXD VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   machine:
                     description: |-
-                      (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.
-                      The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`.
+                      (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass, certificate, key and password.
+                      The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`, `certificate`, `key` and `password`.
                     type: string
                   memoryOverCommitRatio:
                     description: |-
@@ -84,6 +140,20 @@ spec:
                       (String) The new VM host name. This is computed if it's not set.
                       The new VM host name. This is computed if it's not set.
                     type: string
+                  passwordSecretRef:
+                    description: |-
+                      key pair. If no certificate and key are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if machine, power_user, or power_pass parameters are used.
+                      LXD trust password to use for power control of a LXD VM Host. If parameters `certificate` and `key` are used, the trust password will be used to trust the certificate-key pair. If no `certificate` and `key` are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   pool:
                     description: |-
                       (String) The new VM host pool name. This is computed if it's not set.
@@ -178,8 +248,8 @@ spec:
                     type: string
                   powerPassSecretRef:
                     description: |-
-                      (String, Sensitive) User password to use for power control of the VM host. Cannot be set if machine parameter is used.
-                      User password to use for power control of the VM host. Cannot be set if `machine` parameter is used.
+                      (String, Sensitive) User password to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
+                      User password to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
                     properties:
                       key:
                         type: string
@@ -192,8 +262,13 @@ spec:
                     type: object
                   powerUser:
                     description: |-
-                      (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
-                      User name to use for power control of the VM host. Cannot be set if `machine` parameter is used.
+                      (String) User name to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
+                      User name to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
+                    type: string
+                  project:
+                    description: |-
+                      (String) LXD project to be used by VM host to deploy machines to. Cannot be set if machine, power_user or power_pass parameters are used.
+                      LXD project to be used by VM host to deploy machines to. Cannot be set if `machine`, `power_user` or `power_pass` parameters are used.
                     type: string
                   tags:
                     description: |-
@@ -227,6 +302,20 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
+                  certificateSecretRef:
+                    description: |-
+                      (String, Sensitive) Certificate to use for power control of a LXD VM host. It can't be set if machine, power_user or power_pass parameters are used.
+                      Certificate to use for power control of a LXD VM host. It can't be set if `machine`, `power_user` or `power_pass` parameters are used.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   cpuOverCommitRatio:
                     description: |-
                       (Number) The new VM host CPU overcommit ratio. This is computed if it's not set.
@@ -237,10 +326,52 @@ spec:
                       (String) The new VM host default macvlan mode. Supported values are: bridge, passthru, private, vepa. This is computed if it's not set.
                       The new VM host default macvlan mode. Supported values are: `bridge`, `passthru`, `private`, `vepa`. This is computed if it's not set.
                     type: string
+                  deployParams:
+                    description: |-
+                      (Block List, Max: 1) Nested argument with the config used to deploy the machine specified using machine. (see below for nested schema)
+                      Nested argument with the config used to deploy the machine specified using `machine`.
+                    items:
+                      properties:
+                        distroSeries:
+                          description: |-
+                            (String) The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
+                            The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
+                          type: string
+                        enableHwSync:
+                          description: |-
+                            (Boolean) Periodically sync hardware
+                            Periodically sync hardware
+                          type: boolean
+                        hweKernel:
+                          description: |-
+                            (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+                            Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+                          type: string
+                        userData:
+                          description: |-
+                            init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
+                            Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with `file("/tmp/user-data.txt")`, where `/tmp/user-data.txt` is a cloud-init script.
+                          type: string
+                      type: object
+                    type: array
+                  keySecretRef:
+                    description: |-
+                      (String, Sensitive) Certificate key to use for power control of a LXD VM host. It can't be set if machine, power_user, or power_pass parameters are used.
+                      Certificate key to use for power control of a LXD VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   machine:
                     description: |-
-                      (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.
-                      The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`.
+                      (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass, certificate, key and password.
+                      The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`, `certificate`, `key` and `password`.
                     type: string
                   memoryOverCommitRatio:
                     description: |-
@@ -252,6 +383,20 @@ spec:
                       (String) The new VM host name. This is computed if it's not set.
                       The new VM host name. This is computed if it's not set.
                     type: string
+                  passwordSecretRef:
+                    description: |-
+                      key pair. If no certificate and key are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if machine, power_user, or power_pass parameters are used.
+                      LXD trust password to use for power control of a LXD VM Host. If parameters `certificate` and `key` are used, the trust password will be used to trust the certificate-key pair. If no `certificate` and `key` are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   pool:
                     description: |-
                       (String) The new VM host pool name. This is computed if it's not set.
@@ -346,8 +491,8 @@ spec:
                     type: string
                   powerPassSecretRef:
                     description: |-
-                      (String, Sensitive) User password to use for power control of the VM host. Cannot be set if machine parameter is used.
-                      User password to use for power control of the VM host. Cannot be set if `machine` parameter is used.
+                      (String, Sensitive) User password to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
+                      User password to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
                     properties:
                       key:
                         type: string
@@ -360,8 +505,13 @@ spec:
                     type: object
                   powerUser:
                     description: |-
-                      (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
-                      User name to use for power control of the VM host. Cannot be set if `machine` parameter is used.
+                      (String) User name to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
+                      User name to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
+                    type: string
+                  project:
+                    description: |-
+                      (String) LXD project to be used by VM host to deploy machines to. Cannot be set if machine, power_user or power_pass parameters are used.
+                      LXD project to be used by VM host to deploy machines to. Cannot be set if `machine`, `power_user` or `power_pass` parameters are used.
                     type: string
                   tags:
                     description: |-
@@ -460,13 +610,41 @@ spec:
                       (String) The new VM host default macvlan mode. Supported values are: bridge, passthru, private, vepa. This is computed if it's not set.
                       The new VM host default macvlan mode. Supported values are: `bridge`, `passthru`, `private`, `vepa`. This is computed if it's not set.
                     type: string
+                  deployParams:
+                    description: |-
+                      (Block List, Max: 1) Nested argument with the config used to deploy the machine specified using machine. (see below for nested schema)
+                      Nested argument with the config used to deploy the machine specified using `machine`.
+                    items:
+                      properties:
+                        distroSeries:
+                          description: |-
+                            (String) The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
+                            The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
+                          type: string
+                        enableHwSync:
+                          description: |-
+                            (Boolean) Periodically sync hardware
+                            Periodically sync hardware
+                          type: boolean
+                        hweKernel:
+                          description: |-
+                            (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+                            Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
+                          type: string
+                        userData:
+                          description: |-
+                            init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
+                            Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with `file("/tmp/user-data.txt")`, where `/tmp/user-data.txt` is a cloud-init script.
+                          type: string
+                      type: object
+                    type: array
                   id:
                     description: (String) The ID of this resource.
                     type: string
                   machine:
                     description: |-
-                      (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.
-                      The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`.
+                      (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass, certificate, key and password.
+                      The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`, `certificate`, `key` and `password`.
                     type: string
                   memoryOverCommitRatio:
                     description: |-
@@ -490,8 +668,13 @@ spec:
                     type: string
                   powerUser:
                     description: |-
-                      (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
-                      User name to use for power control of the VM host. Cannot be set if `machine` parameter is used.
+                      (String) User name to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
+                      User name to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
+                    type: string
+                  project:
+                    description: |-
+                      (String) LXD project to be used by VM host to deploy machines to. Cannot be set if machine, power_user or power_pass parameters are used.
+                      LXD project to be used by VM host to deploy machines to. Cannot be set if `machine`, `power_user` or `power_pass` parameters are used.
                     type: string
                   resourcesCoresTotal:
                     description: |-

@@ -8,9 +8,9 @@ package v1alpha1
 
 import (
 	"context"
-
 	v1alpha1 "github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/machine/v1alpha1"
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
+	resource "github.com/crossplane/upjet/v2/pkg/resource"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -24,7 +24,7 @@ func (mg *InterfaceBond) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.MachineRef,
 		Selector:     mg.Spec.ForProvider.MachineSelector,
@@ -41,7 +41,7 @@ func (mg *InterfaceBond) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.MachineRef,
 		Selector:     mg.Spec.InitProvider.MachineSelector,
@@ -68,7 +68,7 @@ func (mg *InterfaceBridge) ResolveReferences(ctx context.Context, c client.Reade
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.MachineRef,
 		Selector:     mg.Spec.ForProvider.MachineSelector,
@@ -85,7 +85,7 @@ func (mg *InterfaceBridge) ResolveReferences(ctx context.Context, c client.Reade
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.MachineRef,
 		Selector:     mg.Spec.InitProvider.MachineSelector,
@@ -112,7 +112,7 @@ func (mg *InterfaceLink) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.MachineRef,
 		Selector:     mg.Spec.ForProvider.MachineSelector,
@@ -129,7 +129,7 @@ func (mg *InterfaceLink) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Subnet),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("cidr", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.SubnetRef,
 		Selector:     mg.Spec.ForProvider.SubnetSelector,
@@ -146,7 +146,7 @@ func (mg *InterfaceLink) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.MachineRef,
 		Selector:     mg.Spec.InitProvider.MachineSelector,
@@ -163,7 +163,7 @@ func (mg *InterfaceLink) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Subnet),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("cidr", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.SubnetRef,
 		Selector:     mg.Spec.InitProvider.SubnetSelector,
@@ -190,7 +190,7 @@ func (mg *InterfacePhysical) ResolveReferences(ctx context.Context, c client.Rea
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.MachineRef,
 		Selector:     mg.Spec.ForProvider.MachineSelector,
@@ -207,7 +207,7 @@ func (mg *InterfacePhysical) ResolveReferences(ctx context.Context, c client.Rea
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.MachineRef,
 		Selector:     mg.Spec.InitProvider.MachineSelector,
@@ -234,7 +234,7 @@ func (mg *InterfaceVLAN) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Fabric),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.FabricRef,
 		Selector:     mg.Spec.ForProvider.FabricSelector,
@@ -251,7 +251,7 @@ func (mg *InterfaceVLAN) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.MachineRef,
 		Selector:     mg.Spec.ForProvider.MachineSelector,
@@ -268,7 +268,7 @@ func (mg *InterfaceVLAN) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Fabric),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.FabricRef,
 		Selector:     mg.Spec.InitProvider.FabricSelector,
@@ -285,7 +285,7 @@ func (mg *InterfaceVLAN) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Machine),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.MachineRef,
 		Selector:     mg.Spec.InitProvider.MachineSelector,
@@ -312,7 +312,7 @@ func (mg *Subnet) ResolveReferences(ctx context.Context, c client.Reader) error 
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Vlan),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.VlanRef,
 		Selector:     mg.Spec.ForProvider.VlanSelector,
@@ -329,7 +329,7 @@ func (mg *Subnet) ResolveReferences(ctx context.Context, c client.Reader) error 
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Vlan),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractResourceID(),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.VlanRef,
 		Selector:     mg.Spec.InitProvider.VlanSelector,
@@ -356,7 +356,7 @@ func (mg *SubnetIPRange) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Subnet),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("cidr", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.SubnetRef,
 		Selector:     mg.Spec.ForProvider.SubnetSelector,
@@ -373,7 +373,7 @@ func (mg *SubnetIPRange) ResolveReferences(ctx context.Context, c client.Reader)
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Subnet),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("cidr", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.SubnetRef,
 		Selector:     mg.Spec.InitProvider.SubnetSelector,
@@ -400,7 +400,7 @@ func (mg *VLAN) ResolveReferences(ctx context.Context, c client.Reader) error {
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Fabric),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.ForProvider.FabricRef,
 		Selector:     mg.Spec.ForProvider.FabricSelector,
@@ -417,7 +417,7 @@ func (mg *VLAN) ResolveReferences(ctx context.Context, c client.Reader) error {
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Fabric),
-		Extract:      reference.ExternalName(),
+		Extract:      resource.ExtractParamPath("name", true),
 		Namespace:    mg.GetNamespace(),
 		Reference:    mg.Spec.InitProvider.FabricRef,
 		Selector:     mg.Spec.InitProvider.FabricSelector,

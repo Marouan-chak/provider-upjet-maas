@@ -428,6 +428,26 @@ spec:
                       (String) The architecture type of the machine. Defaults to amd64/generic.
                       The architecture type of the machine. Defaults to `amd64/generic`.
                     type: string
+                  blockDevices:
+                    description: |-
+                      (List of Object) A list of block devices attached to the machine. (see below for nested schema)
+                      A list of block devices attached to the machine.
+                    items:
+                      properties:
+                        idPath:
+                          description: (String)
+                          type: string
+                        model:
+                          description: (String)
+                          type: string
+                        name:
+                          description: (String)
+                          type: string
+                        sizeGigabytes:
+                          description: (Number)
+                          type: number
+                      type: object
+                    type: array
                   domain:
                     description: |-
                       (String) The domain of the machine. This is computed if it's not set.

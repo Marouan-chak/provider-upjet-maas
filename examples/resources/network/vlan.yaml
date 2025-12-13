@@ -1,15 +1,18 @@
 ---
+# VLAN on provisioning fabric (optional - use if you need VLAN tagging)
+# For a simple setup, you may not need this - the default untagged VLAN works
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: VLAN
 metadata:
-  name: example-vlan
+  name: provisioning-vlan
 spec:
   forProvider:
-    # Reference the fabric by name
+    # Reference the provisioning fabric
     fabricRef:
-      name: example-fabric
-    vid: 100
-    name: my-vlan
+      name: provisioning-fabric
+    # VLAN ID (traffic segregation ID)
+    vid: 50
+    name: provisioning-vlan
     mtu: 1500
   providerConfigRef:
     name: default

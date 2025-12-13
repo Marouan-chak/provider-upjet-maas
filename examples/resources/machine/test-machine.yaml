@@ -1,0 +1,19 @@
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: Machine
+metadata:
+  name: example-machine
+spec:
+  providerConfigRef:
+    name: default
+  forProvider:
+    pxeMacAddress: "52:54:00:aa:bb:cc"
+    hostname: "maas-test-vm-01"
+    architecture: "amd64/generic"
+    powerType: "manual"
+
+    # If your CRD uses Upjet reference fields, use one of these, not poolRef
+    # poolIdRef:
+    #   name: example-pool
+    # poolIdSelector:
+    #   matchLabels:
+    #     maas.example.org/pool: default

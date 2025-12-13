@@ -16,48 +16,60 @@ import (
 
 type DeployParamsInitParameters struct {
 
+	// (String) The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
 	// The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
 	DistroSeries *string `json:"distroSeries,omitempty" tf:"distro_series,omitempty"`
 
+	// (Boolean) Periodically sync hardware
 	// Periodically sync hardware
 	EnableHwSync *bool `json:"enableHwSync,omitempty" tf:"enable_hw_sync,omitempty"`
 
+	// (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
 	// Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
 	HweKernel *string `json:"hweKernel,omitempty" tf:"hwe_kernel,omitempty"`
 
+	// init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
 	// Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with `file("/tmp/user-data.txt")`, where `/tmp/user-data.txt` is a cloud-init script.
 	UserData *string `json:"userData,omitempty" tf:"user_data,omitempty"`
 }
 
 type DeployParamsObservation struct {
 
+	// (String) The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
 	// The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
 	DistroSeries *string `json:"distroSeries,omitempty" tf:"distro_series,omitempty"`
 
+	// (Boolean) Periodically sync hardware
 	// Periodically sync hardware
 	EnableHwSync *bool `json:"enableHwSync,omitempty" tf:"enable_hw_sync,omitempty"`
 
+	// (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
 	// Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
 	HweKernel *string `json:"hweKernel,omitempty" tf:"hwe_kernel,omitempty"`
 
+	// init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
 	// Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with `file("/tmp/user-data.txt")`, where `/tmp/user-data.txt` is a cloud-init script.
 	UserData *string `json:"userData,omitempty" tf:"user_data,omitempty"`
 }
 
 type DeployParamsParameters struct {
 
+	// (String) The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
 	// The distro series used to deploy the specifed MAAS machine. If it's not given, the MAAS server default value is used.
 	// +kubebuilder:validation:Optional
 	DistroSeries *string `json:"distroSeries,omitempty" tf:"distro_series,omitempty"`
 
+	// (Boolean) Periodically sync hardware
 	// Periodically sync hardware
 	// +kubebuilder:validation:Optional
 	EnableHwSync *bool `json:"enableHwSync,omitempty" tf:"enable_hw_sync,omitempty"`
 
+	// (String) Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
 	// Hardware enablement kernel to use with the image. Only used when deploying Ubuntu.
 	// +kubebuilder:validation:Optional
 	HweKernel *string `json:"hweKernel,omitempty" tf:"hwe_kernel,omitempty"`
 
+	// init user data script that gets run on the machine once it has deployed. A good practice is to set this with file("/tmp/user-data.txt"), where /tmp/user-data.txt is a cloud-init script.
 	// Cloud-init user data script that gets run on the machine once it has deployed. A good practice is to set this with `file("/tmp/user-data.txt")`, where `/tmp/user-data.txt` is a cloud-init script.
 	// +kubebuilder:validation:Optional
 	UserData *string `json:"userData,omitempty" tf:"user_data,omitempty"`
@@ -69,6 +81,7 @@ type VMHostInitParameters struct {
 	// The new VM host CPU overcommit ratio. This is computed if it's not set.
 	CPUOverCommitRatio *float64 `json:"cpuOverCommitRatio,omitempty" tf:"cpu_over_commit_ratio,omitempty"`
 
+	// (String, Sensitive) Certificate to use for power control of a LXD VM host. It can't be set if machine, power_user or power_pass parameters are used.
 	// Certificate to use for power control of a LXD VM host. It can't be set if `machine`, `power_user` or `power_pass` parameters are used.
 	CertificateSecretRef *v1.LocalSecretKeySelector `json:"certificateSecretRef,omitempty" tf:"-"`
 
@@ -76,13 +89,15 @@ type VMHostInitParameters struct {
 	// The new VM host default macvlan mode. Supported values are: `bridge`, `passthru`, `private`, `vepa`. This is computed if it's not set.
 	DefaultMacvlanMode *string `json:"defaultMacvlanMode,omitempty" tf:"default_macvlan_mode,omitempty"`
 
+	// (Block List, Max: 1) Nested argument with the config used to deploy the machine specified using machine. (see below for nested schema)
 	// Nested argument with the config used to deploy the machine specified using `machine`.
 	DeployParams []DeployParamsInitParameters `json:"deployParams,omitempty" tf:"deploy_params,omitempty"`
 
+	// (String, Sensitive) Certificate key to use for power control of a LXD VM host. It can't be set if machine, power_user, or power_pass parameters are used.
 	// Certificate key to use for power control of a LXD VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
 	KeySecretRef *v1.LocalSecretKeySelector `json:"keySecretRef,omitempty" tf:"-"`
 
-	// (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.
+	// (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass, certificate, key and password.
 	// The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`, `certificate`, `key` and `password`.
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
@@ -94,12 +109,14 @@ type VMHostInitParameters struct {
 	// The new VM host name. This is computed if it's not set.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// key pair. If no certificate and key are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if machine, power_user, or power_pass parameters are used.
 	// LXD trust password to use for power control of a LXD VM Host. If parameters `certificate` and `key` are used, the trust password will be used to trust the certificate-key pair. If no `certificate` and `key` are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
 	PasswordSecretRef *v1.LocalSecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// (String) The new VM host pool name. This is computed if it's not set.
 	// The new VM host pool name. This is computed if it's not set.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/infrastructure/v1alpha1.ResourcePool
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	Pool *string `json:"pool,omitempty" tf:"pool,omitempty"`
 
 	// Reference to a ResourcePool in infrastructure to populate pool.
@@ -114,14 +131,15 @@ type VMHostInitParameters struct {
 	// Address that gives MAAS access to the VM host power control. For example: `qemu+ssh://172.16.99.2/system`. The address given here must reachable by the MAAS server. It can't be set if `machine` argument is used.
 	PowerAddress *string `json:"powerAddress,omitempty" tf:"power_address,omitempty"`
 
-	// (String, Sensitive) User password to use for power control of the VM host. Cannot be set if machine parameter is used.
+	// (String, Sensitive) User password to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
 	// User password to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
 	PowerPassSecretRef *v1.LocalSecretKeySelector `json:"powerPassSecretRef,omitempty" tf:"-"`
 
-	// (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
+	// (String) User name to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
 	// User name to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
 	PowerUser *string `json:"powerUser,omitempty" tf:"power_user,omitempty"`
 
+	// (String) LXD project to be used by VM host to deploy machines to. Cannot be set if machine, power_user or power_pass parameters are used.
 	// LXD project to be used by VM host to deploy machines to. Cannot be set if `machine`, `power_user` or `power_pass` parameters are used.
 	Project *string `json:"project,omitempty" tf:"project,omitempty"`
 
@@ -149,13 +167,14 @@ type VMHostObservation struct {
 	// The new VM host default macvlan mode. Supported values are: `bridge`, `passthru`, `private`, `vepa`. This is computed if it's not set.
 	DefaultMacvlanMode *string `json:"defaultMacvlanMode,omitempty" tf:"default_macvlan_mode,omitempty"`
 
+	// (Block List, Max: 1) Nested argument with the config used to deploy the machine specified using machine. (see below for nested schema)
 	// Nested argument with the config used to deploy the machine specified using `machine`.
 	DeployParams []DeployParamsObservation `json:"deployParams,omitempty" tf:"deploy_params,omitempty"`
 
 	// (String) The ID of this resource.
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
 
-	// (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.
+	// (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass, certificate, key and password.
 	// The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`, `certificate`, `key` and `password`.
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
@@ -175,10 +194,11 @@ type VMHostObservation struct {
 	// Address that gives MAAS access to the VM host power control. For example: `qemu+ssh://172.16.99.2/system`. The address given here must reachable by the MAAS server. It can't be set if `machine` argument is used.
 	PowerAddress *string `json:"powerAddress,omitempty" tf:"power_address,omitempty"`
 
-	// (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
+	// (String) User name to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
 	// User name to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
 	PowerUser *string `json:"powerUser,omitempty" tf:"power_user,omitempty"`
 
+	// (String) LXD project to be used by VM host to deploy machines to. Cannot be set if machine, power_user or power_pass parameters are used.
 	// LXD project to be used by VM host to deploy machines to. Cannot be set if `machine`, `power_user` or `power_pass` parameters are used.
 	Project *string `json:"project,omitempty" tf:"project,omitempty"`
 
@@ -215,6 +235,7 @@ type VMHostParameters struct {
 	// +kubebuilder:validation:Optional
 	CPUOverCommitRatio *float64 `json:"cpuOverCommitRatio,omitempty" tf:"cpu_over_commit_ratio,omitempty"`
 
+	// (String, Sensitive) Certificate to use for power control of a LXD VM host. It can't be set if machine, power_user or power_pass parameters are used.
 	// Certificate to use for power control of a LXD VM host. It can't be set if `machine`, `power_user` or `power_pass` parameters are used.
 	// +kubebuilder:validation:Optional
 	CertificateSecretRef *v1.LocalSecretKeySelector `json:"certificateSecretRef,omitempty" tf:"-"`
@@ -224,15 +245,17 @@ type VMHostParameters struct {
 	// +kubebuilder:validation:Optional
 	DefaultMacvlanMode *string `json:"defaultMacvlanMode,omitempty" tf:"default_macvlan_mode,omitempty"`
 
+	// (Block List, Max: 1) Nested argument with the config used to deploy the machine specified using machine. (see below for nested schema)
 	// Nested argument with the config used to deploy the machine specified using `machine`.
 	// +kubebuilder:validation:Optional
 	DeployParams []DeployParamsParameters `json:"deployParams,omitempty" tf:"deploy_params,omitempty"`
 
+	// (String, Sensitive) Certificate key to use for power control of a LXD VM host. It can't be set if machine, power_user, or power_pass parameters are used.
 	// Certificate key to use for power control of a LXD VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
 	// +kubebuilder:validation:Optional
 	KeySecretRef *v1.LocalSecretKeySelector `json:"keySecretRef,omitempty" tf:"-"`
 
-	// (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass.
+	// (String) The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: power_address, power_user, power_pass, certificate, key and password.
 	// The identifier (hostname, FQDN or system ID) of a registered ready MAAS machine. This is going to be deployed and registered as a new VM host. This argument conflicts with: `power_address`, `power_user`, `power_pass`, `certificate`, `key` and `password`.
 	// +kubebuilder:validation:Optional
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
@@ -247,6 +270,7 @@ type VMHostParameters struct {
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// key pair. If no certificate and key are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if machine, power_user, or power_pass parameters are used.
 	// LXD trust password to use for power control of a LXD VM Host. If parameters `certificate` and `key` are used, the trust password will be used to trust the certificate-key pair. If no `certificate` and `key` are specified, MAAS will generate a trusted certificate and key for the VM host. It can't be set if `machine`, `power_user`, or `power_pass` parameters are used.
 	// +kubebuilder:validation:Optional
 	PasswordSecretRef *v1.LocalSecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
@@ -254,6 +278,7 @@ type VMHostParameters struct {
 	// (String) The new VM host pool name. This is computed if it's not set.
 	// The new VM host pool name. This is computed if it's not set.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/infrastructure/v1alpha1.ResourcePool
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	// +kubebuilder:validation:Optional
 	Pool *string `json:"pool,omitempty" tf:"pool,omitempty"`
 
@@ -270,16 +295,17 @@ type VMHostParameters struct {
 	// +kubebuilder:validation:Optional
 	PowerAddress *string `json:"powerAddress,omitempty" tf:"power_address,omitempty"`
 
-	// (String, Sensitive) User password to use for power control of the VM host. Cannot be set if machine parameter is used.
+	// (String, Sensitive) User password to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
 	// User password to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
 	// +kubebuilder:validation:Optional
 	PowerPassSecretRef *v1.LocalSecretKeySelector `json:"powerPassSecretRef,omitempty" tf:"-"`
 
-	// (String) User name to use for power control of the VM host. Cannot be set if machine parameter is used.
+	// (String) User name to use for power control of a Virsh VM host. Cannot be set if machine, certificate, key or password parameters are used.
 	// User name to use for power control of a Virsh VM host. Cannot be set if `machine`, `certificate`, `key` or `password` parameters are used.
 	// +kubebuilder:validation:Optional
 	PowerUser *string `json:"powerUser,omitempty" tf:"power_user,omitempty"`
 
+	// (String) LXD project to be used by VM host to deploy machines to. Cannot be set if machine, power_user or power_pass parameters are used.
 	// LXD project to be used by VM host to deploy machines to. Cannot be set if `machine`, `power_user` or `power_pass` parameters are used.
 	// +kubebuilder:validation:Optional
 	Project *string `json:"project,omitempty" tf:"project,omitempty"`

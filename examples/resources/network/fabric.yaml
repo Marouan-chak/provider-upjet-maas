@@ -1,10 +1,12 @@
 ---
+# Fabric for MAAS provisioning network
+# This represents the L2 network between Raspberry Pi and Proxmox
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: Fabric
 metadata:
-  name: example-fabric
+  name: provisioning-fabric
 spec:
   forProvider:
-    name: my-fabric
+    name: provisioning-fabric
   providerConfigRef:
     name: default

@@ -21,4 +21,4 @@ spec:
   runtimeConfigRef:
     name: provider-upjet-maas
   package: docker.io/marouandock/provider-maas:latest
-  packagePullPolicy: IfNotPresent
+  packagePullPolicy: Always

@@ -107,6 +107,11 @@ spec:
                     - name
                     - namespace
                     type: object
+                  transferToUser:
+                    description: |-
+                      (String) If provided, resources owned by the deleted user will be transferred to this user.
+                      If provided, resources owned by the deleted user will be transferred to this user.
+                    type: string
                 type: object
               initProvider:
                 description: |-
@@ -155,6 +160,11 @@ spec:
                     - name
                     - namespace
                     type: object
+                  transferToUser:
+                    description: |-
+                      (String) If provided, resources owned by the deleted user will be transferred to this user.
+                      If provided, resources owned by the deleted user will be transferred to this user.
+                    type: string
                 required:
                 - passwordSecretRef
                 type: object
@@ -278,6 +288,11 @@ spec:
                     description: |-
                       (String) The user name.
                       The user name.
+                    type: string
+                  transferToUser:
+                    description: |-
+                      (String) If provided, resources owned by the deleted user will be transferred to this user.
+                      If provided, resources owned by the deleted user will be transferred to this user.
                     type: string
                 type: object
               conditions:

@@ -1,31 +1,33 @@
 ---
+# Subnet for MAAS provisioning network
+# This matches the isolated network between Raspberry Pi and Proxmox
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: Subnet
 metadata:
-  name: example-subnet
+  name: provisioning-subnet
 spec:
   forProvider:
-    cidr: "10.10.0.0/24"
-    name: my-subnet
+    # Provisioning network CIDR (Pi <-> Proxmox vmbr1)
+    cidr: "192.168.50.0/24"
+    name: provisioning-subnet
     # Reference the fabric by name
-    fabric: my-fabric
-    # Reference the VLAN by traffic segregation ID
-    vlan: "100"
-    gatewayIp: "10.10.0.1"
+    fabric: provisioning-fabric
+    # Gateway is the Raspberry Pi's provisioning interface
+    gatewayIp: "192.168.50.1"
     dnsServers:
       - "8.8.8.8"
       - "8.8.4.4"
     allowDns: true
     allowProxy: true
-    # Optional: IP ranges for DHCP
+    # DHCP range for PXE booting Proxmox VMs
     ipRanges:
       - type: dynamic
-        startIp: "10.10.0.100"
-        endIp: "10.10.0.200"
-        comment: "DHCP range"
+        startIp: "192.168.50.100"
+        endIp: "192.168.50.200"
+        comment: "DHCP range for PXE boot"
       - type: reserved
-        startIp: "10.10.0.1"
-        endIp: "10.10.0.10"
+        startIp: "192.168.50.1"
+        endIp: "192.168.50.10"
         comment: "Reserved for infrastructure"
   providerConfigRef:
     name: default

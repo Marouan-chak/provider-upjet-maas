@@ -1,11 +1,12 @@
 ---
+# Resource pool for Proxmox VMs
 apiVersion: infrastructure.maas.crossplane.io/v1alpha1
 kind: ResourcePool
 metadata:
-  name: example-pool
+  name: proxmox-pool
 spec:
   forProvider:
-    name: my-pool
-    description: "Example resource pool for testing"
+    name: proxmox-pool
+    description: "Pool for Proxmox VMs managed by MAAS"
   providerConfigRef:
     name: default

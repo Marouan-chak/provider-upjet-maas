@@ -17,12 +17,17 @@ type BlockDevicesInitParameters struct {
 }
 
 type BlockDevicesObservation struct {
+
+	// (String)
 	IDPath *string `json:"idPath,omitempty" tf:"id_path,omitempty"`
 
+	// (String)
 	Model *string `json:"model,omitempty" tf:"model,omitempty"`
 
+	// (String)
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// (Number)
 	SizeGigabytes *float64 `json:"sizeGigabytes,omitempty" tf:"size_gigabytes,omitempty"`
 }
 
@@ -50,6 +55,7 @@ type MachineInitParameters struct {
 	// (String) The resource pool of the machine. This is computed if it's not set.
 	// The resource pool of the machine. This is computed if it's not set.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/infrastructure/v1alpha1.ResourcePool
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	Pool *string `json:"pool,omitempty" tf:"pool,omitempty"`
 
 	// Reference to a ResourcePool in infrastructure to populate pool.
@@ -83,6 +89,7 @@ type MachineObservation struct {
 	// The architecture type of the machine. Defaults to `amd64/generic`.
 	Architecture *string `json:"architecture,omitempty" tf:"architecture,omitempty"`
 
+	// (List of Object) A list of block devices attached to the machine. (see below for nested schema)
 	// A list of block devices attached to the machine.
 	BlockDevices []BlockDevicesObservation `json:"blockDevices,omitempty" tf:"block_devices,omitempty"`
 
@@ -148,6 +155,7 @@ type MachineParameters struct {
 	// (String) The resource pool of the machine. This is computed if it's not set.
 	// The resource pool of the machine. This is computed if it's not set.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/cluster/infrastructure/v1alpha1.ResourcePool
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("name", true)
 	// +kubebuilder:validation:Optional
 	Pool *string `json:"pool,omitempty" tf:"pool,omitempty"`
 

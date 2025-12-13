@@ -543,6 +543,11 @@ spec:
                             (String) The file system type (e.g. ext4). If this is not set, the partition is unformatted.
                             The file system type (e.g. `ext4`). If this is not set, the partition is unformatted.
                           type: string
+                        id:
+                          description: |-
+                            (String) The ID of this resource.
+                            The ID of the partition.
+                          type: number
                         label:
                           description: |-
                             (String) The label assigned if the partition is formatted.

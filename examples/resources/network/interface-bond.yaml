@@ -1,13 +1,15 @@
 ---
+# OPTIONAL: Create a network bond on a machine
+# Requires machine with multiple NICs - not typical for simple Proxmox VM
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfaceBond
 metadata:
-  name: example-bond
+  name: proxmox-vm-bond
 spec:
   forProvider:
-    # Reference to the machine
+    # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: example-machine
+      name: proxmox-vm
     # Bond configuration
     name: bond0
     # Parent interfaces (physical NICs to bond)
@@ -18,6 +20,6 @@ spec:
     bondMode: "802.3ad"
     bondMiimon: 100
     bondLacpRate: fast
-    mtu: 9000
+    mtu: 1500
   providerConfigRef:
     name: default

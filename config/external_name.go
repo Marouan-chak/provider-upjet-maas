@@ -6,18 +6,23 @@ import (
 
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
+//
+// For MAAS resources, we use IdentifierFromProvider for all resources.
+// The external-name will be set to the ID returned by the provider (which is often
+// the resource name for name-based resources like fabric, pool, tag, etc.).
+// This ensures the name field stays in forProvider for explicit specification.
 var ExternalNameConfigs = map[string]config.ExternalName{
 	// Network resources
-	"maas_fabric":                   config.IdentifierFromProvider,
-	"maas_vlan":                     config.IdentifierFromProvider,
-	"maas_subnet":                   config.IdentifierFromProvider,
-	"maas_subnet_ip_range":          config.IdentifierFromProvider,
-	"maas_space":                    config.IdentifierFromProvider,
+	"maas_fabric":                     config.IdentifierFromProvider,
+	"maas_vlan":                       config.IdentifierFromProvider,
+	"maas_subnet":                     config.IdentifierFromProvider,
+	"maas_subnet_ip_range":            config.IdentifierFromProvider,
+	"maas_space":                      config.IdentifierFromProvider,
 	"maas_network_interface_physical": config.IdentifierFromProvider,
-	"maas_network_interface_bond":   config.IdentifierFromProvider,
-	"maas_network_interface_bridge": config.IdentifierFromProvider,
-	"maas_network_interface_vlan":   config.IdentifierFromProvider,
-	"maas_network_interface_link":   config.IdentifierFromProvider,
+	"maas_network_interface_bond":     config.IdentifierFromProvider,
+	"maas_network_interface_bridge":   config.IdentifierFromProvider,
+	"maas_network_interface_vlan":     config.IdentifierFromProvider,
+	"maas_network_interface_link":     config.IdentifierFromProvider,
 
 	// DNS resources
 	"maas_dns_domain": config.IdentifierFromProvider,
@@ -25,7 +30,6 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 
 	// Machine resources
 	"maas_machine":         config.IdentifierFromProvider,
-	// "maas_instance": config.IdentifierFromProvider, // Disabled: complex allocate_params causes example generation issues
 	"maas_vm_host":         config.IdentifierFromProvider,
 	"maas_vm_host_machine": config.IdentifierFromProvider,
 

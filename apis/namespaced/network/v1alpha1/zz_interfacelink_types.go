@@ -20,6 +20,7 @@ type InterfaceLinkInitParameters struct {
 	// Boolean value. When enabled, it sets the subnet gateway IP address as the default gateway for the machine the interface belongs to. This option can only be used with the `AUTO` and `STATIC` modes. Defaults to `false`.
 	DefaultGateway *bool `json:"defaultGateway,omitempty" tf:"default_gateway,omitempty"`
 
+	// (String) The identifier (system ID, hostname, or FQDN) of the device with the network interface. Either machine or device must be provided.
 	// The identifier (system ID, hostname, or FQDN) of the device with the network interface. Either `machine` or `device` must be provided.
 	Device *string `json:"device,omitempty" tf:"device,omitempty"`
 
@@ -27,9 +28,10 @@ type InterfaceLinkInitParameters struct {
 	// Valid IP address (from the given subnet) to be configured on the network interface. Only used when `mode` is set to `STATIC`.
 	IPAddress *string `json:"ipAddress,omitempty" tf:"ip_address,omitempty"`
 
-	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface.
+	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface. Either machine or device must be provided.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the network interface. Either `machine` or `device` must be provided.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/machine/v1alpha1.Machine
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
 	// Reference to a Machine in machine to populate machine.
@@ -55,6 +57,7 @@ type InterfaceLinkInitParameters struct {
 	// (String) The identifier (CIDR or ID) of the subnet to be connected.
 	// The identifier (CIDR or ID) of the subnet to be connected.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/network/v1alpha1.Subnet
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("cidr", true)
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 
 	// Reference to a Subnet in network to populate subnet.
@@ -72,6 +75,7 @@ type InterfaceLinkObservation struct {
 	// Boolean value. When enabled, it sets the subnet gateway IP address as the default gateway for the machine the interface belongs to. This option can only be used with the `AUTO` and `STATIC` modes. Defaults to `false`.
 	DefaultGateway *bool `json:"defaultGateway,omitempty" tf:"default_gateway,omitempty"`
 
+	// (String) The identifier (system ID, hostname, or FQDN) of the device with the network interface. Either machine or device must be provided.
 	// The identifier (system ID, hostname, or FQDN) of the device with the network interface. Either `machine` or `device` must be provided.
 	Device *string `json:"device,omitempty" tf:"device,omitempty"`
 
@@ -82,7 +86,7 @@ type InterfaceLinkObservation struct {
 	// Valid IP address (from the given subnet) to be configured on the network interface. Only used when `mode` is set to `STATIC`.
 	IPAddress *string `json:"ipAddress,omitempty" tf:"ip_address,omitempty"`
 
-	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface.
+	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface. Either machine or device must be provided.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the network interface. Either `machine` or `device` must be provided.
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
@@ -110,6 +114,7 @@ type InterfaceLinkParameters struct {
 	// +kubebuilder:validation:Optional
 	DefaultGateway *bool `json:"defaultGateway,omitempty" tf:"default_gateway,omitempty"`
 
+	// (String) The identifier (system ID, hostname, or FQDN) of the device with the network interface. Either machine or device must be provided.
 	// The identifier (system ID, hostname, or FQDN) of the device with the network interface. Either `machine` or `device` must be provided.
 	// +kubebuilder:validation:Optional
 	Device *string `json:"device,omitempty" tf:"device,omitempty"`
@@ -119,9 +124,10 @@ type InterfaceLinkParameters struct {
 	// +kubebuilder:validation:Optional
 	IPAddress *string `json:"ipAddress,omitempty" tf:"ip_address,omitempty"`
 
-	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface.
+	// (String) The identifier (system ID, hostname, or FQDN) of the machine with the network interface. Either machine or device must be provided.
 	// The identifier (system ID, hostname, or FQDN) of the machine with the network interface. Either `machine` or `device` must be provided.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/machine/v1alpha1.Machine
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractResourceID()
 	// +kubebuilder:validation:Optional
 	Machine *string `json:"machine,omitempty" tf:"machine,omitempty"`
 
@@ -150,6 +156,7 @@ type InterfaceLinkParameters struct {
 	// (String) The identifier (CIDR or ID) of the subnet to be connected.
 	// The identifier (CIDR or ID) of the subnet to be connected.
 	// +crossplane:generate:reference:type=github.com/Marouan-chak/provider-upjet-maas/apis/namespaced/network/v1alpha1.Subnet
+	// +crossplane:generate:reference:extractor=github.com/crossplane/upjet/v2/pkg/resource.ExtractParamPath("cidr", true)
 	// +kubebuilder:validation:Optional
 	Subnet *string `json:"subnet,omitempty" tf:"subnet,omitempty"`
 
