@@ -51,14 +51,14 @@ Thank you for your interest in contributing to provider-upjet-maas! This documen
 
 We recommend setting up pre-commit hooks to catch issues early:
 
-**Option 1: Using pre-commit (recommended)**
+#### Option 1: Using pre-commit (recommended)
 
 ```bash
 pip install pre-commit
 pre-commit install
 ```
 
-**Option 2: Using our install script**
+#### Option 2: Using our install script
 
 ```bash
 ./scripts/install-hooks.sh

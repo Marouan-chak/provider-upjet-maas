@@ -94,7 +94,7 @@ build_provider() {
   cd "$(dirname "$0")/.."
 
   if find_provider_image; then
-    read -p "  Rebuild? (y/N): " rebuild
+    read -r -p "  Rebuild? (y/N): " rebuild
     if [[ "$rebuild" =~ ^[Yy]$ ]]; then
       make build
       find_provider_image

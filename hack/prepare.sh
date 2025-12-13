@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 set -euox pipefail
 
-: ${PROVIDER_NAME_LOWER:=$(read -r -p "Lower case provider name (ex. github): " PROVIDER_NAME_LOWER; echo -n "${PROVIDER_NAME_LOWER}")}
-: ${PROVIDER_NAME_NORMAL:=$(read -r -p "Normal case provider name (ex. GitHub): " PROVIDER_NAME_NORMAL; echo -n "${PROVIDER_NAME_NORMAL}")}
-: ${ORGANIZATION_NAME:=$(read -r -p "Organization (e.g., my-org-name): " ORGANIZATION_NAME; echo -n "${ORGANIZATION_NAME}")}
-: ${CRD_ROOT_GROUP:=$(read -r -p "CRD rootGroup (e.g., crossplane.io): " CRD_ROOT_GROUP; echo -n "${CRD_ROOT_GROUP}")}
+prompt_if_unset() {
+  local var_name="$1"
+  local prompt="$2"
+  local -n var_ref="${var_name}"
+
+  if [ -z "${var_ref:-}" ]; then
+    read -r -p "${prompt}" var_ref
+  fi
+}
+
+prompt_if_unset PROVIDER_NAME_LOWER "Lower case provider name (ex. github): "
+prompt_if_unset PROVIDER_NAME_NORMAL "Normal case provider name (ex. GitHub): "
+prompt_if_unset ORGANIZATION_NAME "Organization (e.g., my-org-name): "
+prompt_if_unset CRD_ROOT_GROUP "CRD rootGroup (e.g., crossplane.io): "
 
 REPLACE_FILES='./* ./.github :!build/** :!go.* :!hack/prepare.sh'
 # shellcheck disable=SC2086
