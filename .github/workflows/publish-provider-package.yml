@@ -66,6 +66,8 @@ jobs:
           curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh
           sudo mv crossplane /usr/local/bin/
 
+          OWNER_LC="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+
           crossplane xpkg push \
             --package-files="$PACKAGE_FILE" \
-            ghcr.io/${{ github.repository_owner }}/provider-upjet-maas:${{ github.event.inputs.version }}
+            ghcr.io/${OWNER_LC}/provider-upjet-maas:${{ github.event.inputs.version }}
