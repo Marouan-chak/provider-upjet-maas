@@ -223,13 +223,29 @@ e2e: local-deploy uptest
 
 crddiff: $(UPTEST)
 	@$(INFO) Checking breaking CRD schema changes
-	@for crd in $${MODIFIED_CRD_LIST}; do \
-		if ! git cat-file -e "$${GITHUB_BASE_REF}:$${crd}" 2>/dev/null; then \
-			echo "CRD $${crd} does not exist in the $${GITHUB_BASE_REF} branch. Skipping..." ; \
+	@BASE_REF="$${GITHUB_BASE_REF:-main}"; \
+	if git rev-parse --verify "$${BASE_REF}^{commit}" >/dev/null 2>&1; then \
+		:; \
+	elif git rev-parse --verify "origin/$${BASE_REF}^{commit}" >/dev/null 2>&1; then \
+		BASE_REF="origin/$${BASE_REF}"; \
+	else \
+		echo "Base ref '$${BASE_REF}' not found locally; fetching from origin..." ; \
+		git fetch --no-tags --depth=1 origin "$${BASE_REF}:refs/remotes/origin/$${BASE_REF}" >/dev/null 2>&1 || true ; \
+		if git rev-parse --verify "origin/$${BASE_REF}^{commit}" >/dev/null 2>&1; then \
+			BASE_REF="origin/$${BASE_REF}"; \
+		else \
+			echo "Cannot resolve base ref '$${BASE_REF}'. Set GITHUB_BASE_REF to an existing ref (e.g. origin/main)." ; \
+			exit 1 ; \
+		fi ; \
+	fi ; \
+	echo "Using base ref: $${BASE_REF}" ; \
+	for crd in $${MODIFIED_CRD_LIST}; do \
+		if ! git cat-file -e "$${BASE_REF}:$${crd}" 2>/dev/null; then \
+			echo "CRD $${crd} does not exist in the $${BASE_REF} ref. Skipping..." ; \
 			continue ; \
 		fi ; \
 		echo "Checking $${crd} for breaking API changes..." ; \
-		changes_detected=$$(go run github.com/crossplane/uptest/cmd/crddiff@$(CRDDIFF_VERSION) revision --enable-upjet-extensions <(git cat-file -p "$${GITHUB_BASE_REF}:$${crd}") "$${crd}" 2>&1) ; \
+		changes_detected=$$(go run github.com/crossplane/uptest/cmd/crddiff@$(CRDDIFF_VERSION) revision --enable-upjet-extensions <(git cat-file -p "$${BASE_REF}:$${crd}") "$${crd}" 2>&1) ; \
 		if [[ $$? != 0 ]] ; then \
 			printf "\033[31m"; echo "Breaking change detected!"; printf "\033[0m" ; \
 			echo "$${changes_detected}" ; \
@@ -240,12 +256,32 @@ crddiff: $(UPTEST)
 
 schema-version-diff:
 	@$(INFO) Checking for native state schema version changes
-	@export PREV_PROVIDER_VERSION=$$(git cat-file -p "${GITHUB_BASE_REF}:Makefile" | sed -nr 's/^export[[:space:]]*TERRAFORM_PROVIDER_VERSION[[:space:]]*:=[[:space:]]*(.+)/\1/p'); \
+	@BASE_REF="$${GITHUB_BASE_REF:-main}"; \
+	if git rev-parse --verify "$${BASE_REF}^{commit}" >/dev/null 2>&1; then \
+		:; \
+	elif git rev-parse --verify "origin/$${BASE_REF}^{commit}" >/dev/null 2>&1; then \
+		BASE_REF="origin/$${BASE_REF}"; \
+	else \
+		echo "Base ref '$${BASE_REF}' not found locally; fetching from origin..." ; \
+		git fetch --no-tags --depth=1 origin "$${BASE_REF}:refs/remotes/origin/$${BASE_REF}" >/dev/null 2>&1 || true ; \
+		if git rev-parse --verify "origin/$${BASE_REF}^{commit}" >/dev/null 2>&1; then \
+			BASE_REF="origin/$${BASE_REF}"; \
+		else \
+			echo "Cannot resolve base ref '$${BASE_REF}'. Set GITHUB_BASE_REF to an existing ref (e.g. origin/main)." ; \
+			exit 1 ; \
+		fi ; \
+	fi ; \
+	echo "Using base ref: $${BASE_REF}" ; \
+	export PREV_PROVIDER_VERSION=$$(git cat-file -p "$${BASE_REF}:Makefile" | sed -nr 's/^export[[:space:]]*TERRAFORM_PROVIDER_VERSION[[:space:]]*[:?]?=[[:space:]]*([^[:space:]]+).*/\1/p'); \
+	if [ -z "$${PREV_PROVIDER_VERSION}" ]; then \
+		echo "Failed to detect previous TERRAFORM_PROVIDER_VERSION from $${BASE_REF}:Makefile" ; \
+		exit 1 ; \
+	fi ; \
 	echo Detected previous Terraform provider version: $${PREV_PROVIDER_VERSION}; \
 	echo Current Terraform provider version: $${TERRAFORM_PROVIDER_VERSION}; \
 	mkdir -p $(WORK_DIR); \
-	git cat-file -p "$${GITHUB_BASE_REF}:config/schema.json" > "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}"; \
-	./scripts/version_diff.py config/generated.lst "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}" config/schema.json
+	git cat-file -p "$${BASE_REF}:config/schema.json" > "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}"; \
+	python3 ./scripts/version_diff.py config/provider-metadata.yaml "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}" config/schema.json
 	@$(OK) Checking for native state schema version changes
 
 .PHONY: cobertura submodules fallthrough run crds.clean
