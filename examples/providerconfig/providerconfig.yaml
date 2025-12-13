@@ -1,11 +1,13 @@
 ---
+# ProviderConfig for MAAS
+# Update apiURL with your MAAS server address
 apiVersion: maas.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: default
 spec:
-  # MAAS API URL - Raspberry Pi on home LAN
-  apiURL: "http://192.168.0.5:5240/MAAS"
+  # MAAS API URL - replace with your MAAS server address
+  apiURL: "http://YOUR_MAAS_SERVER:5240/MAAS"
   apiVersion: "2.0"
   credentials:
     source: Secret

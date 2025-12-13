@@ -1,17 +1,18 @@
 ---
-# OPTIONAL: Configure a physical NIC on a machine
-# Only use after machine is commissioned in MAAS
+# Physical network interface configuration
+# Use to modify settings on an existing physical NIC
+# Requires: Machine must exist and be commissioned
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfacePhysical
 metadata:
-  name: proxmox-vm-nic
+  name: my-physical-nic
 spec:
   forProvider:
     # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: proxmox-vm
-    # MAC address of the physical interface
-    macAddress: "BC:24:11:C8:EE:50"
+      name: my-machine
+    # MAC address of the physical interface - REPLACE WITH YOUR MAC
+    macAddress: "AA:BB:CC:DD:EE:FF"
     # Interface name
     name: eth0
     mtu: 1500

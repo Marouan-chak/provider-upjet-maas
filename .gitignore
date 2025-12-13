@@ -6,9 +6,28 @@ cover.out
 /.vendor-new
 .DS_Store
 
-# ignore IDE folders
+# IDE folders
 .vscode/
 .idea/
 
-# implementation docs (internal planning)
+# Internal planning and debug files
 /implementation/
+debug.txt
+*.log
+
+# Claude Code session files
+.claude/
+
+# Terraform state (if testing locally)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# OS files
+Thumbs.db
+*.swp
+*~
+
+# Test coverage
+coverage.out
+coverage.html

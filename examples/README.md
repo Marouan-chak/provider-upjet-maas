@@ -33,7 +33,7 @@ kubectl apply -f examples/provider/provider.yaml
 
 ### 2. Configure Credentials
 
-Update `examples/providerconfig/secret.yaml` with your MAAS API key:
+Update `examples/providerconfig/creds.yaml` with your MAAS API key:
 
 ```yaml
 stringData:
@@ -98,8 +98,6 @@ kubectl apply -f examples/resources/infrastructure/tag.yaml
 
 # Create user (requires password secret)
 kubectl apply -f examples/resources/infrastructure/user.yaml
-Error:
-Message:               observe failed: cannot run plan: plan failed: Instance cannot be destroyed: Resource maas_user.example-user has lifecycle.prevent_destroy set, but the plan calls for this resource to be destroyed. To avoid this error and continue with the plan, either disable lifecycle.prevent_destroy or reduce the scope of the plan using the -target flag.
 
 # Create device
 kubectl apply -f examples/resources/infrastructure/device.yaml
@@ -110,19 +108,12 @@ kubectl apply -f examples/resources/infrastructure/device.yaml
 ```bash
 # Create machine (requires power params secret)
 kubectl apply -f examples/resources/machine/machine.yaml
-error:
-create failed: apply failed: ServerError: 400 Bad Request ({"pool": ["Select a valid choice. That choice is not one of the available choices."]}):
 
 # Create VM host
 kubectl apply -f examples/resources/machine/vm-host.yaml
-error:
-message: 'apply failed: ServerError: 503 Service Unavailable (Failed talking to
-      pod: No connection adapters were found for ''qemu+ssh://user@192.168.1.100:8443/system/1.0''): '
 
 # Create VM on host (depends on vm-host)
 kubectl apply -f examples/resources/machine/vm-host-machine.yaml
-error:
-Warning  CannotResolveResourceReferences  1s (x4 over 8s)  managed/machine.maas.crossplane.io/v1alpha1, kind=vmhostmachine  cannot resolve references: mg.Spec.ForProvider.VMHost: referenced field was empty (referenced resource may not yet be ready)
 ```
 
 #### Storage Resources
@@ -130,11 +121,6 @@ Warning  CannotResolveResourceReferences  1s (x4 over 8s)  managed/machine.maas.
 ```bash
 # Create block device (depends on machine)
 kubectl apply -f examples/resources/storage/block-device.yaml
-error:
-conditions:
-  - lastTransitionTime: "2025-12-12T14:57:44Z"
-    message: 'cannot resolve references: mg.Spec.ForProvider.Machine: referenced field
-      was empty (referenced resource may not yet be ready)'
 ```
 
 #### Network Interface Resources
@@ -142,8 +128,6 @@ conditions:
 ```bash
 # Configure physical interface (depends on machine)
 kubectl apply -f examples/resources/network/interface-physical.yaml
-error:
-Warning  CannotResolveResourceReferences  2s (x4 over 9s)  managed/network.maas.crossplane.io/v1alpha1, kind=interfacephysical  cannot resolve references: mg.Spec.ForProvider.Machine: referenced field was empty (referenced resource may not yet be ready)
 
 # Create bond interface (depends on machine)
 kubectl apply -f examples/resources/network/interface-bond.yaml

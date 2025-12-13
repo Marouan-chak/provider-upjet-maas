@@ -1,24 +1,27 @@
 ---
-# OPTIONAL: Create a network bond on a machine
-# Requires machine with multiple NICs - not typical for simple Proxmox VM
+# Network bond on a machine
+# Bonds multiple physical NICs for redundancy or throughput
+# Requires: Machine with multiple NICs, must be commissioned
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: InterfaceBond
 metadata:
-  name: proxmox-vm-bond
+  name: my-bond
 spec:
   forProvider:
     # Reference to the machine (must exist and be commissioned)
     machineRef:
-      name: proxmox-vm
-    # Bond configuration
+      name: my-machine
+    # Bond interface name
     name: bond0
-    # Parent interfaces (physical NICs to bond)
+    # Physical interfaces to bond together
     parents:
       - eth0
       - eth1
-    # Bond mode: balance-rr, active-backup, balance-xor, broadcast, 802.3ad, balance-tlb, balance-alb
+    # Bond modes: balance-rr, active-backup, balance-xor, broadcast, 802.3ad, balance-tlb, balance-alb
     bondMode: "802.3ad"
+    # MII link monitoring interval in milliseconds
     bondMiimon: 100
+    # LACP rate: 'fast' or 'slow' (only for 802.3ad mode)
     bondLacpRate: fast
     mtu: 1500
   providerConfigRef:

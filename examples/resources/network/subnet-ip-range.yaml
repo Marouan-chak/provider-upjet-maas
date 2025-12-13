@@ -1,18 +1,19 @@
 ---
-# Additional IP range on the provisioning subnet
+# Additional IP range on an existing subnet
+# Use this to add more IP ranges after subnet creation
 apiVersion: network.maas.crossplane.io/v1alpha1
 kind: SubnetIPRange
 metadata:
-  name: provisioning-reserved-range
+  name: my-reserved-range
 spec:
   forProvider:
-    # Reference to the provisioning subnet
+    # Reference to the subnet
     subnetRef:
-      name: provisioning-subnet
-    # Reserved range for static IPs
+      name: my-subnet
+    # Range type: 'reserved' or 'dynamic'
     type: reserved
-    startIp: "192.168.50.240"
-    endIp: "192.168.50.250"
+    startIp: "10.0.0.240"
+    endIp: "10.0.0.250"
     comment: "Reserved for static assignments"
   providerConfigRef:
     name: default

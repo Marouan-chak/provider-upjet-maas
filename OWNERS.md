@@ -1,12 +1,18 @@
 # OWNERS
 
-This page lists all maintainers for **this** repository. Each repository in the [Crossplane Contrib
-organization](https://github.com/crossplane-contrib/) will list their repository maintainers in their own
-`OWNERS.md` file.
-
+This page lists all maintainers for this repository.
 
 ## Maintainers
 
-* Full Name <email@example.com> ([githubusername](https://github.com/githubusername))
+* Marouan Chakroun ([Marouan-chak](https://github.com/Marouan-chak))
+
+## Becoming a Maintainer
+
+If you're interested in becoming a maintainer, please:
+
+1. Contribute regularly to the project
+2. Help with code reviews and issue triage
+3. Demonstrate understanding of the codebase
+4. Contact existing maintainers to discuss
 
 See [CODEOWNERS](./CODEOWNERS) for automatic PR assignment.

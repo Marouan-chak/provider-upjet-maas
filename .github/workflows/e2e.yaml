@@ -2,6 +2,20 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
+# End-to-End Testing with Uptest
+#
+# This workflow runs E2E tests against a real MAAS instance.
+# It is triggered by commenting '/test-examples="path/to/examples"' on a PR.
+#
+# REQUIRED SECRETS:
+# - UPTEST_CLOUD_CREDENTIALS: MAAS API credentials for testing
+# - UPTEST_DATASOURCE: Uptest datasource configuration
+#
+# To enable this workflow:
+# 1. Set up a MAAS test instance
+# 2. Add the required secrets to your repository
+# 3. Comment '/test-examples="examples/resources/network"' on a PR
+
 name: End to End Testing
 
 on:

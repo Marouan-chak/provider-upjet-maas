@@ -3,52 +3,54 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: proxmox-vm-power-params
+  name: my-machine-power-params
   namespace: crossplane-system
 type: Opaque
 stringData:
   # For manual power type, empty JSON is required
-  # Power control is done via Proxmox UI
+  # For other power types (ipmi, virsh, etc), include appropriate parameters
   params: "{}"
 ---
-# Proxmox VM managed by MAAS
+# Machine managed by MAAS
 #
 # SETUP:
-# 1. Create a VM in Proxmox with:
-#    - No boot media (PXE boot)
-#    - Network on vmbr1 (provisioning bridge)
-#    - Boot order: Network first, then Disk
-# 2. Start the VM - it will PXE boot and appear in MAAS
-# 3. Get the MAC address from Proxmox UI: VM -> Hardware -> Network Device
-# 4. Update pxeMacAddress below with your VM's MAC
+# 1. PXE boot your machine so it appears in MAAS
+# 2. Get the MAC address from MAAS UI or your hypervisor
+# 3. Update pxeMacAddress below with your machine's MAC
+#
+# Power types:
+# - manual: Power control done manually (e.g., via Proxmox/hypervisor UI)
+# - ipmi: IPMI-based power control for physical servers
+# - virsh: libvirt/KVM virtual machines
+# - See MAAS docs for all supported power types
 #
 apiVersion: machine.maas.crossplane.io/v1alpha1
 kind: Machine
 metadata:
-  name: proxmox-vm
+  name: my-machine
 spec:
   forProvider:
-    # Proxmox VM's MAC address (on vmbr1)
-    pxeMacAddress: "BC:24:11:C8:EE:50"
+    # Machine's PXE MAC address - REPLACE WITH YOUR MAC
+    pxeMacAddress: "AA:BB:CC:DD:EE:FF"
 
-    # Manual power - you control the VM via Proxmox UI
+    # Power type - use 'manual' if controlling power externally
     powerType: manual
 
-    # Empty params for manual power type
+    # Power parameters secret reference
     powerParametersSecretRef:
-      name: proxmox-vm-power-params
+      name: my-machine-power-params
       namespace: crossplane-system
       key: params
 
-    # VM hostname
-    hostname: proxmox-vm
+    # Machine hostname
+    hostname: my-machine
 
-    # x86_64 architecture (Proxmox VM)
+    # Architecture (amd64/generic for x86_64, arm64/generic for ARM)
     architecture: amd64/generic
 
     # Optional: assign to a resource pool
     # poolRef:
-    #   name: proxmox-pool
+    #   name: my-pool
 
   providerConfigRef:
     name: default

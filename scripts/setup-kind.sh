@@ -151,7 +151,7 @@ apply_credentials() {
 
   cd "$(dirname "$0")/.."
 
-  kubectl apply -f examples/providerconfig/secret.yaml
+  kubectl apply -f examples/providerconfig/creds.yaml
   kubectl apply -f examples/providerconfig/providerconfig.yaml
   echo ""
 }
