@@ -1,0 +1,19 @@
+apiVersion: machine.maas.m.crossplane.io/v1alpha1
+kind: VMHostMachine
+metadata:
+  annotations:
+    meta.upbound.io/example-id: machine/v1alpha1/vmhostmachine
+  labels:
+    testing.upbound.io/example-name: kvm
+  name: kvm
+  namespace: crossplane-system
+spec:
+  forProvider:
+    cores: 1
+    count: 2
+    memory: 2048
+    storageDisks:
+    - sizeGigabytes: 15
+    vmHostSelector:
+      matchLabels:
+        testing.upbound.io/example-name: kvm

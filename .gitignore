@@ -1,0 +1,43 @@
+/.cache
+/.work
+/_output
+cover.out
+/vendor
+/.vendor-new
+.DS_Store
+kubeconfig
+
+# E2E test directories
+e2e/*/.cache
+e2e/*/.work
+e2e/*/_output
+
+# IDE folders
+.vscode/
+.idea/
+
+# Internal planning and debug files
+/implementation/
+debug.txt
+*.log
+
+# Claude Code files
+.claude/
+CLAUDE.md
+
+# Terraform state (if testing locally)
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# OS files
+Thumbs.db
+*.swp
+*~
+
+# Test coverage
+coverage.out
+coverage.html
+
+# Packages
+*.xpkg

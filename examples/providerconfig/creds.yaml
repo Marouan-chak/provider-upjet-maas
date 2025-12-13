@@ -1,0 +1,12 @@
+# MAAS API credentials secret
+# Replace YOUR_CONSUMER_KEY:YOUR_TOKEN_KEY:YOUR_TOKEN_SECRET with your actual API key
+# Get your API key from MAAS UI: User menu -> API keys -> Generate MAAS API key
+apiVersion: v1
+kind: Secret
+metadata:
+  name: maas-creds
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  credentials: |
+    { "apiKey": "YOUR_CONSUMER_KEY:YOUR_TOKEN_KEY:YOUR_TOKEN_SECRET" }

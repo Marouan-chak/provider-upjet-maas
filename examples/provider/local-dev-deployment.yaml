@@ -1,0 +1,56 @@
+---
+# Local development deployment - bypasses Crossplane package manager
+# Use this for testing locally built images in Kind
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: provider-upjet-maas
+  namespace: crossplane-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-upjet-maas
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: provider-upjet-maas
+    namespace: crossplane-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: provider-upjet-maas
+  namespace: crossplane-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: provider-upjet-maas
+  template:
+    metadata:
+      labels:
+        app: provider-upjet-maas
+    spec:
+      serviceAccountName: provider-upjet-maas
+      containers:
+        - name: provider
+          # Image loaded via: kind load docker-image <image> --name crossplane-test
+          image: local.dev/provider-upjet-maas:latest
+          imagePullPolicy: Never
+          args:
+            - --debug
+            - --terraform-provider-source=canonical/maas
+            - --terraform-provider-version=2.6.0
+          ports:
+            - containerPort: 8080
+              name: metrics
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi

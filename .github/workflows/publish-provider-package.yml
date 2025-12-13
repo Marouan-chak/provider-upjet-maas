@@ -1,0 +1,75 @@
+name: Publish Provider Package (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version string to use while publishing the package (e.g. v1.0.0-alpha.1)"
+        required: true
+
+env:
+  GO_VERSION: '1.24'
+
+jobs:
+  publish-provider-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3
+        with:
+          platforms: all
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3
+        with:
+          install: true
+
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Vendor Dependencies
+        run: make vendor vendor.check
+
+      - name: Build Artifacts
+        run: make -j2 build.all
+        env:
+          BUILD_ARGS: "--load"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          # Prefer a PAT if provided. GITHUB_TOKEN can be read-only depending on
+          # repo/org settings, which causes 403 when pushing to ghcr.io.
+          password: ${{ secrets.GHCR_TOKEN || secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Push Provider Package to ghcr.io
+        run: |
+          PACKAGE_FILE=$(find _output/xpkg -name "*.xpkg" | head -1)
+          if [ -z "$PACKAGE_FILE" ]; then
+            echo "No package file found!"
+            exit 1
+          fi
+          echo "Found package: $PACKAGE_FILE"
+
+          curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh
+          sudo mv crossplane /usr/local/bin/
+
+          OWNER_LC="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+
+          crossplane xpkg push \
+            --package-files="$PACKAGE_FILE" \
+            ghcr.io/${OWNER_LC}/provider-upjet-maas:${{ github.event.inputs.version }}

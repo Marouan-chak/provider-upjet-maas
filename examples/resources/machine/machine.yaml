@@ -1,0 +1,56 @@
+---
+# Secret for power parameters (must be created first)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-machine-power-params
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  # For manual power type, empty JSON is required
+  # For other power types (ipmi, virsh, etc), include appropriate parameters
+  params: "{}"
+---
+# Machine managed by MAAS
+#
+# SETUP:
+# 1. PXE boot your machine so it appears in MAAS
+# 2. Get the MAC address from MAAS UI or your hypervisor
+# 3. Update pxeMacAddress below with your machine's MAC
+#
+# Power types:
+# - manual: Power control done manually (e.g., via Proxmox/hypervisor UI)
+# - ipmi: IPMI-based power control for physical servers
+# - virsh: libvirt/KVM virtual machines
+# - See MAAS docs for all supported power types
+#
+apiVersion: machine.maas.crossplane.io/v1alpha1
+kind: Machine
+metadata:
+  name: my-machine
+spec:
+  forProvider:
+    # Machine's PXE MAC address - REPLACE WITH YOUR MAC
+    pxeMacAddress: "AA:BB:CC:DD:EE:FF"
+
+    # Power type - use 'manual' if controlling power externally
+    powerType: manual
+
+    # Power parameters secret reference
+    powerParametersSecretRef:
+      name: my-machine-power-params
+      namespace: crossplane-system
+      key: params
+
+    # Machine hostname
+    hostname: my-machine
+
+    # Architecture (amd64/generic for x86_64, arm64/generic for ARM)
+    architecture: amd64/generic
+
+    # Optional: assign to a resource pool
+    # poolRef:
+    #   name: my-pool
+
+  providerConfigRef:
+    name: default

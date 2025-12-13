@@ -1,0 +1,26 @@
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: Subnet
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/subnet
+  labels:
+    testing.upbound.io/example-name: tf_subnet
+  name: tf-subnet
+spec:
+  forProvider:
+    cidr: 10.88.88.0/24
+    dnsServers:
+    - 1.1.1.1
+    fabric: ${maas_fabric.tf_fabric.id}
+    gatewayIp: 10.88.88.1
+    ipRanges:
+    - endIp: 10.88.88.50
+      startIp: 10.88.88.1
+      type: reserved
+    - endIp: 10.88.88.254
+      startIp: 10.88.88.200
+      type: dynamic
+    name: tf_subnet
+    vlanSelector:
+      matchLabels:
+        testing.upbound.io/example-name: tf_vlan

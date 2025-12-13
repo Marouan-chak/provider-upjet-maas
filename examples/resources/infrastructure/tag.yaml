@@ -1,0 +1,16 @@
+---
+# Tag for organizing and filtering machines
+# Tags can be applied manually or automatically via XPATH definitions
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: Tag
+metadata:
+  name: my-tag
+spec:
+  forProvider:
+    name: my-tag
+    comment: "Managed by Crossplane"
+    # Optional: XPATH definition for auto-tagging based on hardware
+    # This example auto-tags machines with Intel network cards
+    # definition: "//node[@id='network']/node[@id='interface']/vendor[contains(.,'Intel')]"
+  providerConfigRef:
+    name: default

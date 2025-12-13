@@ -1,0 +1,20 @@
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfacePhysical
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/interfacephysical
+  labels:
+    testing.upbound.io/example-name: virsh_vm1_nic1
+  name: virsh-vm1-nic1
+spec:
+  forProvider:
+    macAddress: 52:54:00:89:f5:3e
+    machineSelector:
+      matchLabels:
+        testing.upbound.io/example-name: virsh_vm1
+    name: eth0
+    tags:
+    - nic1-tag1
+    - nic1-tag2
+    - nic1-tag3
+    vlan: ${data.maas_vlan.default.id}

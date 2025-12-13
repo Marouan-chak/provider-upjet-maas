@@ -1,0 +1,26 @@
+---
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: example-user
+spec:
+  forProvider:
+    name: testuser
+    email: testuser@example.com
+    passwordSecretRef:
+      name: maas-user-password
+      namespace: crossplane-system
+      key: password
+    isAdmin: false
+  providerConfigRef:
+    name: default
+---
+# Secret for user password
+apiVersion: v1
+kind: Secret
+metadata:
+  name: maas-user-password
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  password: "changeme123!"

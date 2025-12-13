@@ -1,0 +1,20 @@
+apiVersion: network.maas.crossplane.io/v1alpha1
+kind: InterfaceLink
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/interfacelink
+  labels:
+    testing.upbound.io/example-name: virsh_vm1_nic1
+  name: virsh-vm1-nic1
+spec:
+  forProvider:
+    defaultGateway: true
+    ipAddress: 10.99.4.111
+    machineSelector:
+      matchLabels:
+        testing.upbound.io/example-name: virsh_vm1
+    mode: STATIC
+    networkInterface: ${maas_network_interface_physical.virsh_vm1_nic1.id}
+    subnetSelector:
+      matchLabels:
+        testing.upbound.io/example-name: maas_subnet

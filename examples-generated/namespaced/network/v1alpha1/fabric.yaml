@@ -1,0 +1,12 @@
+apiVersion: network.maas.m.crossplane.io/v1alpha1
+kind: Fabric
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/fabric
+  labels:
+    testing.upbound.io/example-name: tf_fabric
+  name: tf-fabric
+  namespace: crossplane-system
+spec:
+  forProvider:
+    name: tf-fabric

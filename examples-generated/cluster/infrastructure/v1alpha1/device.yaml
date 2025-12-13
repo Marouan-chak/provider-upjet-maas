@@ -1,0 +1,32 @@
+apiVersion: infrastructure.maas.crossplane.io/v1alpha1
+kind: Device
+metadata:
+  annotations:
+    meta.upbound.io/example-id: infrastructure/v1alpha1/device
+  labels:
+    testing.upbound.io/example-name: test_device
+  name: test-device
+spec:
+  forProvider:
+    description: Test description
+    domain: cloudbase
+    hostname: test-device
+    networkInterfaces:
+    - macAddress: 12:23:45:67:89:de
+    zone: default
+
+---
+
+apiVersion: dns.maas.crossplane.io/v1alpha1
+kind: Domain
+metadata:
+  annotations:
+    meta.upbound.io/example-id: infrastructure/v1alpha1/device
+  labels:
+    testing.upbound.io/example-name: test_domain
+  name: test-domain
+spec:
+  forProvider:
+    authoritative: true
+    name: domain
+    ttl: 3600

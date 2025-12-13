@@ -1,0 +1,12 @@
+---
+apiVersion: dns.maas.crossplane.io/v1alpha1
+kind: Domain
+metadata:
+  name: example-domain
+spec:
+  forProvider:
+    name: example.local
+    authoritative: true
+    ttl: 300
+  providerConfigRef:
+    name: default

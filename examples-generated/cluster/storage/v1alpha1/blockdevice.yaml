@@ -1,0 +1,26 @@
+apiVersion: storage.maas.crossplane.io/v1alpha1
+kind: BlockDevice
+metadata:
+  annotations:
+    meta.upbound.io/example-id: storage/v1alpha1/blockdevice
+  labels:
+    testing.upbound.io/example-name: vdb
+  name: vdb
+spec:
+  forProvider:
+    idPath: /dev/vdb
+    machineSelector:
+      matchLabels:
+        testing.upbound.io/example-name: virsh_vm2
+    name: vdb
+    partitions:
+    - fsType: ext4
+      label: media
+      mountPoint: /media
+      sizeGigabytes: 10
+    - fsType: ext4
+      mountPoint: /storage
+      sizeGigabytes: 15
+    sizeGigabytes: 27
+    tags:
+    - ssd

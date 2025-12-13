@@ -1,0 +1,17 @@
+---
+# ProviderConfig for MAAS
+# Update apiURL with your MAAS server address
+apiVersion: maas.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  # MAAS API URL - replace with your MAAS server address
+  apiURL: "http://YOUR_MAAS_SERVER:5240/MAAS"
+  apiVersion: "2.0"
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: maas-creds
+      key: credentials

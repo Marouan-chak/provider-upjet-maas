@@ -1,0 +1,17 @@
+apiVersion: network.maas.m.crossplane.io/v1alpha1
+kind: SubnetIPRange
+metadata:
+  annotations:
+    meta.upbound.io/example-id: network/v1alpha1/subnetiprange
+  labels:
+    testing.upbound.io/example-name: dynamic_ip_range
+  name: dynamic-ip-range
+  namespace: crossplane-system
+spec:
+  forProvider:
+    endIp: 10.77.77.60
+    startIp: 10.77.77.2
+    subnetSelector:
+      matchLabels:
+        testing.upbound.io/example-name: tf_subnet_2
+    type: dynamic
