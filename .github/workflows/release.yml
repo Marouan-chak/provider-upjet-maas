@@ -7,29 +7,27 @@ on:
 
 env:
   GO_VERSION: '1.24'
-  DOCKER_BUILDX_VERSION: 'v0.30.1'
 
 jobs:
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       packages: write
 
     steps:
       - name: Setup QEMU
-        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3
         with:
           platforms: all
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3
         with:
-          version: ${{ env.DOCKER_BUILDX_VERSION }}
           install: true
 
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           submodules: true
           fetch-depth: 0
@@ -38,24 +36,6 @@ jobs:
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
         with:
           go-version: ${{ env.GO_VERSION }}
-
-      - name: Find the Go Build Cache
-        id: go
-        run: echo "cache=$(make go.cachedir)" >> $GITHUB_OUTPUT
-
-      - name: Cache the Go Build Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.go.outputs.cache }}
-          key: ${{ runner.os }}-build-release-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-build-release-
-
-      - name: Cache Go Dependencies
-        uses: actions/cache@v4
-        with:
-          path: .work/pkg
-          key: ${{ runner.os }}-pkg-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-pkg-
 
       - name: Vendor Dependencies
         run: make vendor vendor.check
@@ -66,7 +46,7 @@ jobs:
           BUILD_ARGS: "--load"
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -78,7 +58,6 @@ jobs:
 
       - name: Push Provider Package to ghcr.io
         run: |
-          # Find the built package
           PACKAGE_FILE=$(find _output/xpkg -name "*.xpkg" | head -1)
           if [ -z "$PACKAGE_FILE" ]; then
             echo "No package file found!"
@@ -86,11 +65,9 @@ jobs:
           fi
           echo "Found package: $PACKAGE_FILE"
 
-          # Install crossplane CLI if not present
-          if ! command -v crossplane &> /dev/null; then
-            curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh
-            sudo mv crossplane /usr/local/bin/
-          fi
+          # Install crossplane CLI
+          curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh
+          sudo mv crossplane /usr/local/bin/
 
           # Push to ghcr.io
           crossplane xpkg push \
@@ -105,7 +82,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda # v2
         with:
           generate_release_notes: true
           files: |

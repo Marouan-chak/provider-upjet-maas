@@ -16,20 +16,19 @@ permissions:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-24.04
-    # CodeQL can't upload results (and may not access workflow-run APIs) for PRs from forks.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v3
         with:
           languages: go
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v3

@@ -1,0 +1,18 @@
+provider-upjet-maas
+Copyright 2024 The provider-upjet-maas Authors
+
+This product includes software developed by Crossplane (https://crossplane.io/).
+
+This product is built using Upjet (https://github.com/crossplane/upjet),
+which is licensed under the Apache 2.0 License.
+
+This product wraps the Terraform MAAS provider
+(https://github.com/canonical/terraform-provider-maas),
+which is licensed under the Mozilla Public License 2.0.
+
+Portions of code are derived from and/or inspired by:
+
+- Crossplane (https://github.com/crossplane/crossplane) - Apache 2.0
+- Upjet (https://github.com/crossplane/upjet) - Apache 2.0
+- terraform-provider-maas (https://github.com/canonical/terraform-provider-maas) - MPL 2.0
+- terraform-plugin-sdk (https://github.com/hashicorp/terraform-plugin-sdk) - MPL 2.0

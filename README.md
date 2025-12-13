@@ -1,24 +1,30 @@
-# Provider MAAS
+# Upjet-based Crossplane Provider for MAAS
 
-`provider-upjet-maas` is a [Crossplane](https://crossplane.io/) provider for
-[Canonical MAAS](https://maas.io/) (Metal as a Service) built using [Upjet](https://github.com/crossplane/upjet).
+<div align="center">
+
+![CI](https://github.com/Marouan-chak/provider-upjet-maas/workflows/CI/badge.svg)
+[![GitHub release](https://img.shields.io/github/release/Marouan-chak/provider-upjet-maas/all.svg)](https://github.com/Marouan-chak/provider-upjet-maas/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Marouan-chak/provider-upjet-maas)](https://goreportcard.com/report/github.com/Marouan-chak/provider-upjet-maas)
+[![Contributors](https://img.shields.io/github/contributors/Marouan-chak/provider-upjet-maas)](https://github.com/Marouan-chak/provider-upjet-maas/graphs/contributors)
+
+</div>
+
+Provider Upjet-MAAS is a [Crossplane](https://crossplane.io/) provider that is
+built using [Upjet](https://github.com/crossplane/upjet) code generation tools
+and exposes XRM-conformant managed resources for
+[Canonical MAAS](https://maas.io/) (Metal as a Service).
 
 Manage your bare-metal infrastructure as Kubernetes resources.
 
-## Supported Resources
+## Getting Started
 
-| Category | Resources |
-|----------|-----------|
-| **Network** | Fabric, VLAN, Subnet, SubnetIPRange, Space |
-| **Network Interfaces** | InterfacePhysical, InterfaceBond, InterfaceBridge, InterfaceVLAN, InterfaceLink |
-| **Machine** | Machine, VMHost, VMHostMachine |
-| **Infrastructure** | ResourcePool, Tag, User, Device |
-| **DNS** | Domain, Record |
-| **Storage** | BlockDevice |
+### Prerequisites
 
-## Quick Start
+- Kubernetes cluster with [Crossplane](https://crossplane.io/) installed
+- MAAS server (v3.0+)
+- MAAS API key
 
-### 1. Install the Provider
+### Install the Provider
 
 ```yaml
 apiVersion: pkg.crossplane.io/v1
@@ -26,11 +32,10 @@ kind: Provider
 metadata:
   name: provider-upjet-maas
 spec:
-  # Replace with your published package or use local development setup
   package: ghcr.io/marouan-chak/provider-upjet-maas:latest
 ```
 
-### 2. Create Credentials Secret
+### Create Credentials Secret
 
 ```yaml
 apiVersion: v1
@@ -44,9 +49,9 @@ stringData:
     { "apiKey": "YOUR_CONSUMER_KEY:YOUR_TOKEN_KEY:YOUR_TOKEN_SECRET" }
 ```
 
-Get your API key from MAAS UI: **User menu → API keys → Generate MAAS API key**
+Get your API key from MAAS UI: **User menu > API keys > Generate MAAS API key**
 
-### 3. Create ProviderConfig
+### Create ProviderConfig
 
 ```yaml
 apiVersion: maas.crossplane.io/v1beta1
@@ -64,7 +69,7 @@ spec:
       key: credentials
 ```
 
-### 4. Create Resources
+### Create Resources
 
 ```yaml
 # Create a resource pool
@@ -91,41 +96,22 @@ spec:
     name: default
 ```
 
+## Supported Resources
+
+| Category | Resources |
+|----------|-----------|
+| **Network** | Fabric, VLAN, Subnet, SubnetIPRange, Space |
+| **Network Interfaces** | InterfacePhysical, InterfaceBond, InterfaceBridge, InterfaceVLAN, InterfaceLink |
+| **Machine** | Machine, VMHost, VMHostMachine |
+| **Infrastructure** | ResourcePool, Tag, User, Device |
+| **DNS** | Domain, Record |
+| **Storage** | BlockDevice |
+
 ## Documentation
 
 - **[Lab Setup Guide](docs/lab-setup-guide.md)**: Complete guide to setting up a MAAS lab with Raspberry Pi and Proxmox
 - **[Examples](examples/)**: Ready-to-use YAML examples for all resources
-
-## Examples Directory Structure
-
-```
-examples/
-├── providerconfig/
-│   ├── creds.yaml           # Credentials secret
-│   └── providerconfig.yaml  # ProviderConfig
-├── resources/
-│   ├── infrastructure/
-│   │   ├── resource-pool.yaml
-│   │   └── tag.yaml
-│   ├── network/
-│   │   ├── fabric.yaml
-│   │   ├── vlan.yaml
-│   │   ├── subnet.yaml
-│   │   ├── subnet-ip-range.yaml
-│   │   ├── space.yaml
-│   │   ├── interface-physical.yaml
-│   │   ├── interface-bond.yaml
-│   │   ├── interface-bridge.yaml
-│   │   ├── interface-vlan.yaml
-│   │   └── interface-link.yaml
-│   ├── machine/
-│   │   └── machine.yaml
-│   ├── dns/
-│   │   ├── domain.yaml
-│   │   └── record.yaml
-│   └── storage/
-│       └── block-device.yaml
-```
+- **[Contributing](CONTRIBUTING.md)**: How to contribute to this project
 
 ## Resource Dependencies
 
@@ -142,15 +128,13 @@ Apply resources in this order:
 8. BlockDevice (depends on Machine)
 ```
 
-## Developing
+## Contributing
 
-### Prerequisites
+For the general contribution guide, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-- Go 1.24+
-- Docker
-- Crossplane CLI
+If you'd like to learn how to use Upjet, see [Upjet Usage Guide](https://github.com/crossplane/upjet/tree/main/docs).
 
-### Build
+### Build Locally
 
 ```bash
 # Initialize submodules (first time only)
@@ -163,16 +147,7 @@ go run cmd/generator/main.go "$PWD"
 make build
 ```
 
-### Push Package
-
-```bash
-# Push to registry
-crossplane xpkg push \
-  --package-files="_output/xpkg/linux_amd64/provider-upjet-maas-*.xpkg" \
-  docker.io/YOUR_USERNAME/provider-maas:latest
-```
-
-### Local Development
+### Local Development with Kind
 
 ```bash
 # Setup Kind cluster with Crossplane and provider
@@ -181,6 +156,11 @@ crossplane xpkg push \
 # Cleanup
 ./scripts/setup-kind.sh --cleanup
 ```
+
+## Getting Help
+
+For filing bugs, suggesting improvements, or requesting new resources, please
+open an [issue](https://github.com/Marouan-chak/provider-upjet-maas/issues/new/choose).
 
 ## External Name Behavior
 
@@ -193,8 +173,6 @@ MAAS uses numeric database IDs as resource identifiers. The `external-name` anno
 | Device | System ID (e.g., `xyz789`) |
 | Tag | Tag name (e.g., `my-tag`) |
 | VLAN, SubnetIPRange | Numeric ID |
-
-This is expected behavior - MAAS internally identifies resources by database primary keys.
 
 ## Troubleshooting
 
@@ -218,10 +196,6 @@ kubectl describe <resource-type> <resource-name>
 2. **Authentication errors**: Verify API key and MAAS URL in ProviderConfig
 3. **Resource stuck in Creating**: Check MAAS UI for the resource state
 
-## Contributing
-
-Issues and PRs welcome at [GitHub](https://github.com/Marouan-chak/provider-upjet-maas).
-
 ## License
 
-Apache 2.0
+The provider is released under the [Apache 2.0 license](LICENSE) with [notice](NOTICE).
