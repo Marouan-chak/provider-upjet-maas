@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![CI](https://github.com/Marouan-chak/provider-upjet-maas/workflows/CI/badge.svg)
-[![GitHub release](https://img.shields.io/github/release/Marouan-chak/provider-upjet-maas/all.svg)](https://github.com/Marouan-chak/provider-upjet-maas/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Marouan-chak/provider-upjet-maas)](https://goreportcard.com/report/github.com/Marouan-chak/provider-upjet-maas)
+[![CI](https://github.com/Marouan-chak/provider-upjet-maas/actions/workflows/ci.yml/badge.svg)](https://github.com/Marouan-chak/provider-upjet-maas/actions/workflows/ci.yml)
+[![Tag](https://img.shields.io/github/v/tag/Marouan-chak/provider-upjet-maas?sort=semver)](https://github.com/Marouan-chak/provider-upjet-maas/tags)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/Marouan-chak/provider-upjet-maas)](https://github.com/Marouan-chak/provider-upjet-maas/blob/main/go.mod)
 [![Contributors](https://img.shields.io/github/contributors/Marouan-chak/provider-upjet-maas)](https://github.com/Marouan-chak/provider-upjet-maas/graphs/contributors)
 
 </div>
