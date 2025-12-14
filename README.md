@@ -32,7 +32,7 @@ kind: Provider
 metadata:
   name: provider-upjet-maas
 spec:
-  package: ghcr.io/marouan-chak/provider-upjet-maas:latest
+  package: ghcr.io/marouan-chak/provider-upjet-maas:v1.0.1
 ```
 
 ### Create Credentials Secret

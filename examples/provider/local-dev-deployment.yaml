@@ -39,7 +39,7 @@ spec:
       containers:
         - name: provider
           # Image loaded via: kind load docker-image <image> --name crossplane-test
-          image: local.dev/provider-upjet-maas:latest
+          image: local.dev/provider-upjet-maas:v1.0.1
           imagePullPolicy: Never
           args:
             - --debug
