@@ -73,3 +73,20 @@ jobs:
           crossplane xpkg push \
             --package-files="$PACKAGE_FILE" \
             ghcr.io/${OWNER_LC}/provider-upjet-maas:${{ github.event.inputs.version }}
+
+      - name: Link GHCR package to this repository
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          go install github.com/google/go-containerregistry/cmd/crane@v0.20.3
+          CRANE="$HOME/go/bin/crane"
+
+          OWNER_LC="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+          REPO_URL="https://github.com/${{ github.repository }}"
+          IMG="ghcr.io/${OWNER_LC}/provider-upjet-maas:${{ github.event.inputs.version }}"
+
+          "$CRANE" mutate "${IMG}" \
+            --annotation "org.opencontainers.image.source=${REPO_URL}" \
+            --label "org.opencontainers.image.source=${REPO_URL}" \
+            --tag "${IMG}"
